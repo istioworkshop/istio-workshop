@@ -359,23 +359,28 @@
 <li>How to verify the installation.</li>
 </ul>
 <h2 id="walkthrough">Walkthrough</h2>
-<p>For the purpose of this workshop we will use the test application
+<p>For the purpose of this workshop we will use the test application named
 <a href="https://github.com/GoogleCloudPlatform/microservices-demo" target="_blank"><strong>Online Boutique</strong></a> (previously: Hipster
-Shop) to evaluate several service mesh scenarios.</p>
-<p>Online Boutique is a cloud-native microservices demo application. It consists of 10 microservices
-that implement a web-based e-commerce app where users can browse items, add them to the cart, and
-purchase them:</p>
-<p><strong>TODO:</strong> Add screenshot from app</p>
+Shop) provided by the Google Cloud Platform team. The application will allow us to evaluate several
+service mesh scenarios, including traffic routing, traffic shifting, and circuit breaking.</p>
+<p>Online Boutique is a cloud-native microservices demo. It consists of 10 microservices, written in
+polyglot programming languages (Go, C#, Node.js, Python, Java), that implement a web-based
+e-commerce app where users can browse items, add them to the cart, and purchase them:</p>
+<p><img src="../assets/images/test-app-screenshot-1.png" alt="">
+<img src="../assets/images/test-app-screenshot-2.png" alt=""></p>
 <p>The application architecture is presented below:</p>
 <p><img src="../assets/images/test-app-architecture.png" alt=""></p>
+<p>The frontend service is an entry point to the application. It exposes an HTTP endpoint for its
+clients (web browser, load generator), providing the content compiled from the integrated
+microservices. Internally, the microservices communicate using the gRPC protocol.</p>
 <h3 id="install-the-app">Install the app</h3>
 <p>Start with enabling the sidecar injection for the <code>default</code> namespace:</p>
 <pre><code>$ kubectl label namespace default istio-injection=enabled
 </code></pre><p>The <code>istio-injection</code> label informs Istio Sidecar Injector running in Istio control plane to inject
-a sidecar into each new pod created in the <code>default</code> namespace. Sidecars running alongside
-application services are responsible for processing the traffic entering and leaving the pods. They
-act as local proxies capable of enforcing the requested traffic policies. Sidecars are the key
-building block required to form a service mesh.</p>
+a sidecar into each new pod created in the <code>default</code> namespace.</p>
+<p>Sidecars running alongside application services are responsible for processing the traffic entering
+and leaving the pods. They act as local proxies capable of enforcing the requested traffic policies.
+Sidecars are the key building block required to form a service mesh.</p>
 <p>Now, clone the application repository from Github:</p>
 <pre><code>$ git clone https://github.com/GoogleCloudPlatform/microservices-demo.git
 </code></pre><p>Enter the repository and checkout the proper version:</p>
@@ -461,7 +466,7 @@ serviceentry.networking.istio.io/whitelist-egress-google-metadata created
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Deploy test application","level":"2.3","depth":1,"next":{"title":"Service metrics","level":"3.1","depth":1,"path":"observability/grafana.md","ref":"observability/grafana.md","articles":[]},"previous":{"title":"Install Istio Service Mesh","level":"2.2","depth":1,"path":"setup/istio.md","ref":"setup/istio.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"setup/test-application.md","mtime":"2020-05-20T14:10:18.865Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-20T14:32:19.030Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Deploy test application","level":"2.3","depth":1,"next":{"title":"Service metrics","level":"3.1","depth":1,"path":"observability/grafana.md","ref":"observability/grafana.md","articles":[]},"previous":{"title":"Install Istio Service Mesh","level":"2.2","depth":1,"path":"setup/istio.md","ref":"setup/istio.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"setup/test-application.md","mtime":"2020-05-20T20:55:21.110Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-20T20:56:38.595Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
