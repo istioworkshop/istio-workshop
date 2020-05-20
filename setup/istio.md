@@ -4,7 +4,7 @@
 
 In this chapter you will learn:
 
-* How to setup the Istio management utility - `istioctl`.
+* How to setup and use the Istio management utility - `istioctl`.
 * How to use the binary to install Istio control plane.
 * How to verify the installation.
 
@@ -101,7 +101,7 @@ $ istioctl manifest apply --set profile=demo
 ✔ Installation complete
 ```
 
-The command will deploy all required Istio components for the purpose of the workshop:
+The command will deploy all Istio components required for the purpose of the workshop:
 
 * **Istiod** - key component, a composite of:
     - **Istio Pilot** - service discovery and config distribution to Envoy sidecars,
@@ -139,7 +139,7 @@ $ kubectl -n istio-system get svc
 NAME                        TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                                                                                                                                      AGE
 grafana                     ClusterIP      10.233.30.217   <none>        3000/TCP                                                                                                                                     3m20s
 istio-egressgateway         ClusterIP      10.233.26.241   <none>        80/TCP,443/TCP,15443/TCP                                                                                                                     3m33s
-istio-ingressgateway        LoadBalancer   10.233.34.251   <pending>     15020:31571/TCP,80:31276/TCP,443:31871/TCP,15029:31062/TCP,15030:32076/TCP,15031:30667/TCP,15032:31128/TCP,31400:32566/TCP,15443:30797/TCP   3m29s
+istio-ingressgateway        LoadBalancer   10.233.34.251   <IP-ADDRESS>  15020:31571/TCP,80:31276/TCP,443:31871/TCP,15029:31062/TCP,15030:32076/TCP,15031:30667/TCP,15032:31128/TCP,31400:32566/TCP,15443:30797/TCP   3m29s
 istio-pilot                 ClusterIP      10.233.16.50    <none>        15010/TCP,15011/TCP,15012/TCP,8080/TCP,15014/TCP,443/TCP                                                                                     3m51s
 istiod                      ClusterIP      10.233.59.86    <none>        15012/TCP,443/TCP                                                                                                                            3m51s
 jaeger-agent                ClusterIP      None            <none>        5775/UDP,6831/UDP,6832/UDP                                                                                                                   3m20s
