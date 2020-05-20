@@ -9,19 +9,25 @@ In this chapter you will learn:
 
 ## Walkthrough
 
-For the purpose of this workshop we will use the test application
+For the purpose of this workshop we will use the test application named
 [**Online Boutique**](https://github.com/GoogleCloudPlatform/microservices-demo) (previously: Hipster
-Shop) to evaluate several service mesh scenarios.
+Shop) provided by the Google Cloud Platform team. The application will allow us to evaluate several
+service mesh scenarios, including traffic routing, traffic shifting, and circuit breaking.
 
-Online Boutique is a cloud-native microservices demo application. It consists of 10 microservices
-that implement a web-based e-commerce app where users can browse items, add them to the cart, and
-purchase them:
+Online Boutique is a cloud-native microservices demo. It consists of 10 microservices, written in
+polyglot programming languages (Go, C#, Node.js, Python, Java), that implement a web-based
+e-commerce app where users can browse items, add them to the cart, and purchase them:
 
-**TODO:** Add screenshot from app
+![](/assets/images/test-app-screenshot-1.png)
+![](/assets/images/test-app-screenshot-2.png)
 
 The application architecture is presented below:
 
 ![](/assets/images/test-app-architecture.png)
+
+The frontend service is an entry point to the application. It exposes an HTTP endpoint for its
+clients (web browser, load generator), providing the content compiled from the integrated
+microservices. Internally, the microservices communicate using the gRPC protocol.
 
 ### Install the app
 
@@ -32,10 +38,11 @@ $ kubectl label namespace default istio-injection=enabled
 ```
 
 The `istio-injection` label informs Istio Sidecar Injector running in Istio control plane to inject
-a sidecar into each new pod created in the `default` namespace. Sidecars running alongside
-application services are responsible for processing the traffic entering and leaving the pods. They
-act as local proxies capable of enforcing the requested traffic policies. Sidecars are the key
-building block required to form a service mesh.
+a sidecar into each new pod created in the `default` namespace.
+
+Sidecars running alongside application services are responsible for processing the traffic entering
+and leaving the pods. They act as local proxies capable of enforcing the requested traffic policies.
+Sidecars are the key building block required to form a service mesh.
 
 Now, clone the application repository from Github:
 

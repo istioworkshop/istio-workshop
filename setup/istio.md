@@ -79,8 +79,9 @@ Available Commands:
 
 ### Deploy control plane
 
-Execute `istioctl` [manifest apply](https://istio.io/docs/reference/commands/istioctl/#istioctl-manifest-apply)
-command to deploy the Istio control plane:
+In order to install the Istio control plane, execute
+`istioctl` [manifest apply](https://istio.io/docs/reference/commands/istioctl/#istioctl-manifest-apply)
+command:
 
 ```
 $ istioctl manifest apply --set profile=demo
