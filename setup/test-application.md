@@ -42,7 +42,7 @@ a sidecar into each new pod created in the `default` namespace.
 
 Sidecars running alongside application services are responsible for processing the traffic entering
 and leaving the pods. They act as local proxies capable of enforcing the requested traffic policies.
-Sidecars are the key building block required to form a service mesh.
+Sidecars are the key building block required to form a service mesh. We will inspect them later.
 
 Now, clone the application repository from Github:
 
@@ -92,13 +92,34 @@ deployment.apps/adservice created
 service/adservice created
 ```
 
-Apply Istio manifests:
+### Verify installation
+
+Ensure that all deployed pods are running (inspect `READY` column):
+
+```
+$ kubectl -n default get pods
+NAME                                     READY   STATUS    RESTARTS   AGE
+adservice-687b58699c-766hv               2/2     Running   0          19m
+cartservice-778cffc8f6-9klmn             2/2     Running   2          20m
+checkoutservice-98cf4f4c-5gmcr           2/2     Running   0          20m
+currencyservice-c69c86b7c-zsl7c          2/2     Running   0          20m
+emailservice-5db6c8b59f-pxjmq            2/2     Running   0          20m
+frontend-8d8958c77-pctms                 2/2     Running   0          20m
+loadgenerator-6bf9fd5bc9-kmlw2           2/2     Running   3          20m
+paymentservice-698f684cf9-9qs2m          2/2     Running   0          20m
+productcatalogservice-789c77b8dc-p595c   2/2     Running   0          20m
+recommendationservice-75d7cd8d5c-2w4nv   2/2     Running   0          20m
+redis-cart-5f59546cdd-tglxz              2/2     Running   0          19m
+shippingservice-7d87945947-fl4xr         2/2     Running   0          19m
+```
+
+### Access the app
+
+Apply Istio manifests to expose the application to the public network:
 
 ```
 $ kubectl -n default apply -f ./release/istio-manifests.yaml
 ```
-
-That will apply initial service mesh configuration:
 
 ```
 gateway.networking.istio.io/frontend-gateway created
@@ -108,6 +129,15 @@ serviceentry.networking.istio.io/whitelist-egress-googleapis created
 serviceentry.networking.istio.io/whitelist-egress-google-metadata created
 ```
 
-**TODO:** Describe the applied policies
+Obtain the hostname address of the Istio Ingress Gateway:
 
-### Verify installation
+```
+$ kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+a50936c539b864c85a16962a7dcad24b-1660651843.us-east-1.elb.amazonaws.com
+```
+
+Visit the address in your web browser (Chrome, Firefox). It should display the Online Boutique
+web page.
+
+Explore the application to get familiar with its functionality. For instance, try to add products to
+the cart and go througuh the checkout process.
