@@ -1,5 +1,8 @@
 # Deploy test application
 
+This chapter presents how to install Online Boutique application for the purpose of service mesh
+evaluation.
+
 ## Outline
 
 In this chapter you will learn:

@@ -1,5 +1,8 @@
 # Provision a Kubernetes cluster
 
+This chapter presents how to provision a Kubernetes cluster in Amazon Web Services (AWS) using kops
+installation utility.
+
 ## Outline
 
 In this chapter you will learn:
@@ -301,5 +304,5 @@ kube-proxy-ip-172-20-54-100.ec2.internal                1/1     Running   0     
 kube-scheduler-ip-172-20-54-100.ec2.internal            1/1     Running   0          3h42m
 ```
 
-If all components are healthy, you successfully provisioned a Kubernetes cluster. Proceed to the
-next chapter.
+If all components are operating without problems, you successfully provisioned a Kubernetes cluster.
+Proceed to the next chapter.

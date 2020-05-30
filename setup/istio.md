@@ -1,5 +1,7 @@
 # Install Istio Service Mesh
 
+This chapter presents how to install Istio Service Mesh in the provisioned Kubernetes cluster.
+
 ## Outline
 
 In this chapter you will learn:
@@ -73,9 +75,9 @@ Available Commands:
 ```
 
 > **NOTE:** We will use the `istioctl` binary multiple times throughout the workshop. Use the
-  `istioctl help` command whenever you encounter issues or something is not clear. The command
-  output will provide you with all necessary instructions (options with detailed documentation).
-  For instance: `istioctl help manifest apply`.
+  `istioctl help` command whenever you encounter issues. The command output will provide you with
+  all necessary instructions (options with detailed documentation). For instance:
+  `istioctl help manifest apply`.
 
 ### Deploy control plane
 
