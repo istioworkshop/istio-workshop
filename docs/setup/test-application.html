@@ -380,7 +380,7 @@ microservices. Internally, the microservices communicate using the gRPC protocol
 a sidecar into each new pod created in the <code>default</code> namespace.</p>
 <p>Sidecars running alongside application services are responsible for processing the traffic entering
 and leaving the pods. They act as local proxies capable of enforcing the requested traffic policies.
-Sidecars are the key building block required to form a service mesh.</p>
+Sidecars are the key building block required to form a service mesh. We will inspect them later.</p>
 <p>Now, clone the application repository from Github:</p>
 <pre><code>$ git clone https://github.com/GoogleCloudPlatform/microservices-demo.git
 </code></pre><p>Enter the repository and checkout the proper version:</p>
@@ -413,16 +413,37 @@ deployment.apps/redis-cart created
 service/redis-cart created
 deployment.apps/adservice created
 service/adservice created
-</code></pre><p>Apply Istio manifests:</p>
+</code></pre><h3 id="verify-installation">Verify installation</h3>
+<p>Ensure that all deployed pods are running (inspect <code>READY</code> column):</p>
+<pre><code>$ kubectl -n default get pods
+NAME                                     READY   STATUS    RESTARTS   AGE
+adservice-687b58699c-766hv               2/2     Running   0          19m
+cartservice-778cffc8f6-9klmn             2/2     Running   2          20m
+checkoutservice-98cf4f4c-5gmcr           2/2     Running   0          20m
+currencyservice-c69c86b7c-zsl7c          2/2     Running   0          20m
+emailservice-5db6c8b59f-pxjmq            2/2     Running   0          20m
+frontend-8d8958c77-pctms                 2/2     Running   0          20m
+loadgenerator-6bf9fd5bc9-kmlw2           2/2     Running   3          20m
+paymentservice-698f684cf9-9qs2m          2/2     Running   0          20m
+productcatalogservice-789c77b8dc-p595c   2/2     Running   0          20m
+recommendationservice-75d7cd8d5c-2w4nv   2/2     Running   0          20m
+redis-cart-5f59546cdd-tglxz              2/2     Running   0          19m
+shippingservice-7d87945947-fl4xr         2/2     Running   0          19m
+</code></pre><h3 id="access-the-app">Access the app</h3>
+<p>Apply Istio manifests to expose the application to the public network:</p>
 <pre><code>$ kubectl -n default apply -f ./release/istio-manifests.yaml
-</code></pre><p>That will apply initial service mesh configuration:</p>
-<pre><code>gateway.networking.istio.io/frontend-gateway created
+</code></pre><pre><code>gateway.networking.istio.io/frontend-gateway created
 virtualservice.networking.istio.io/frontend-ingress created
 virtualservice.networking.istio.io/frontend created
 serviceentry.networking.istio.io/whitelist-egress-googleapis created
 serviceentry.networking.istio.io/whitelist-egress-google-metadata created
-</code></pre><p><strong>TODO:</strong> Describe the applied policies</p>
-<h3 id="verify-installation">Verify installation</h3>
+</code></pre><p>Obtain the hostname address of the Istio Ingress Gateway:</p>
+<pre><code>$ kubectl -n istio-system get service istio-ingressgateway -o jsonpath=&apos;{.status.loadBalancer.ingress[0].hostname}&apos;
+a50936c539b864c85a16962a7dcad24b-1660651843.us-east-1.elb.amazonaws.com
+</code></pre><p>Visit the address in your web browser (Chrome, Firefox). It should display the Online Boutique
+web page.</p>
+<p>Explore the application to get familiar with its functionality. For instance, try to add products to
+the cart and go througuh the checkout process.</p>
 
                                 
                                 </section>
@@ -466,7 +487,7 @@ serviceentry.networking.istio.io/whitelist-egress-google-metadata created
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Deploy test application","level":"2.3","depth":1,"next":{"title":"Service metrics","level":"3.1","depth":1,"path":"observability/grafana.md","ref":"observability/grafana.md","articles":[]},"previous":{"title":"Install Istio Service Mesh","level":"2.2","depth":1,"path":"setup/istio.md","ref":"setup/istio.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"setup/test-application.md","mtime":"2020-05-20T20:55:21.110Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-20T20:56:38.595Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Deploy test application","level":"2.3","depth":1,"next":{"title":"Service metrics","level":"3.1","depth":1,"path":"observability/grafana.md","ref":"observability/grafana.md","articles":[]},"previous":{"title":"Install Istio Service Mesh","level":"2.2","depth":1,"path":"setup/istio.md","ref":"setup/istio.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"setup/test-application.md","mtime":"2020-05-30T14:05:20.433Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-30T17:40:06.034Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

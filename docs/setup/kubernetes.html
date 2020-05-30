@@ -352,6 +352,195 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="provision-a-kubernetes-cluster">Provision a Kubernetes cluster</h1>
+<h2 id="outline">Outline</h2>
+<p>In this chapter you will learn:</p>
+<ul>
+<li>How to install AWS and Kubernetes clients in your system.</li>
+<li>How to install and configure kops for Kubernetes cluster provisioning.</li>
+<li>How to provision a functional Kubernetes cluster in AWS.</li>
+</ul>
+<h2 id="walkthrough">Walkthrough</h2>
+<p>Provisioning a functional Kubernetes cluster in public cloud is a challenging process. It comprises
+multiple steps that require operational
+<a href="https://github.com/kelseyhightower/kubernetes-the-hard-way" target="_blank">knowledge and experience</a>, such as:</p>
+<ul>
+<li>provisioning compute, network and storage resources,</li>
+<li>creating Kubernetes configuration,</li>
+<li>bootstrapping the Kubernetes control plane,</li>
+<li>bootstrapping the Kubernetes worker nodes,</li>
+<li>setting up pod networking,</li>
+<li>configuring certificates.</li>
+</ul>
+<p>In order to facilitate Kubernetes installation and make it convenient for regular developers, a
+broad spectrum of automation tools emerged in the Kubernetes ecosystem.</p>
+<p>In this workshop, we will use <a href="https://kops.sigs.k8s.io/" target="_blank">kops</a> to install a Kubernetes cluster in
+AWS. Kops takes care of provisioning the required cloud resources (EC2 instances, auto-scalers, VPC
+networking) and installing Kubernetes with core components. It automates the entire process
+end-to-end and provides a friendly user interface to customize the deployment for scale and
+high-availability.</p>
+<h3 id="install-prerequisites">Install prerequisites</h3>
+<p>Before we attempt to provision a cluster, we must install the prerequisite client binaries:
+Kubernetes client (<a href="https://kubernetes.io/docs/reference/kubectl/overview/" target="_blank">kubectl</a>), AWS client
+(<a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html" target="_blank">aws</a>) and kops.</p>
+<h4 id="kubernetes-client-kubectl">Kubernetes client (kubectl)</h4>
+<blockquote>
+<p><strong>NOTE:</strong> The instructions below present how to install the client on Linux. For other system
+platforms use the guide in the
+<a href="https://kubernetes.io/docs/tasks/tools/install-kubectl" target="_blank">documentation</a>.</p>
+</blockquote>
+<p>Download the client binary:</p>
+<pre><code>$ curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubectl
+</code></pre><p>Make the binary executable:</p>
+<pre><code>$ chmod +x ./kubectl
+</code></pre><p>Move the binary into the system path:</p>
+<pre><code>$ sudo mv ./kubectl /usr/local/bin/kubectl
+</code></pre><p>Test to ensure the up-to-date version of the client:</p>
+<pre><code>$ kubectl version --client
+</code></pre><h4 id="aws-client">AWS client</h4>
+<blockquote>
+<p><strong>NOTE:</strong> The instructions below present how to install the client on Linux. For other system
+platforms use the guide in the
+<a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html" target="_blank">documentation</a>.</p>
+</blockquote>
+<p>Download the installation file:</p>
+<pre><code>$ curl &quot;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&quot; -o &quot;awscliv2.zip&quot;
+</code></pre><p>Unzip the installer:</p>
+<pre><code>$ unzip awscliv2.zip
+</code></pre><p>Run the <code>install</code> program:</p>
+<pre><code>$ sudo ./aws/install
+</code></pre><p>Test to ensure the up-to-date version of the client:</p>
+<pre><code>$ aws --version
+aws-cli/2.0.6 Python/3.7.4 Linux/4.14.133-113.105.amzn2.x86_64 botocore/2.0.0
+</code></pre><p>Obtain the AWS credentials from the Vocareum <a href="https://labs.vocareum.com/" target="_blank">lab dashboard</a> (enter
+<code>Account Details</code>):</p>
+<p><img src="../assets/images/aws-account-details.png" alt="">
+<img src="../assets/images/aws-creds.png" alt=""></p>
+<p>Copy-paste the credentials to <code>~/.aws/credentials</code> file:</p>
+<pre><code>$ mkdir ~/.aws
+$ vi ~/.aws/credentials
+</code></pre><p>Set default AWS region and output format:</p>
+<pre><code>$ aws configure set default.region us-east-1
+$ aws configure set default.output table
+</code></pre><p>Test if the client is authorized to access the AWS resources:</p>
+<pre><code>$ aws ec2 describe-instances
+</code></pre><p>You should receive an empty output with no authorization errors.</p>
+<h4 id="kops-client">kops client</h4>
+<blockquote>
+<p><strong>NOTE:</strong> The instructions below present how to install the client on Linux. For other system
+platforms use the guide in the <a href="https://kops.sigs.k8s.io/getting_started/install/" target="_blank">documentation</a>.</p>
+</blockquote>
+<p>Download the client binary:</p>
+<pre><code>$ curl -LO https://github.com/kubernetes/kops/releases/download/v1.16.2/kops-linux-amd64
+</code></pre><p>Make the binary executable:</p>
+<pre><code>$ chmod +x ./chmod +x kops-linux-amd64
+</code></pre><p>Move the binary into the system path:</p>
+<pre><code>$ sudo mv kops-linux-amd64 /usr/local/bin/kops
+</code></pre><p>Test to ensure the up-to-date version of the client:</p>
+<pre><code>$ kops version
+Version 1.16.2
+</code></pre><h3 id="provision-a-cluster">Provision a cluster</h3>
+<p>First, create S3 bucket for storing the cluster configuration maintained by kops:</p>
+<pre><code>$ BUCKET_NAME=istio-workshop-$RANDOM-kops-cluster-state-store
+$ aws s3api create-bucket --bucket $BUCKET_NAME --region us-east-1
+$ aws s3api put-bucket-versioning --bucket $BUCKET_NAME --versioning-configuration Status=Enabled
+</code></pre><p>Note the <code>$RANDOM</code> variable in the bucket name. All bucket names must be globally unique in a given
+AWS region. If you encounter errors such as <code>BucketAlreadyExists</code> or
+<code>Bucket name already exists</code>, regenerate the name and try to create the bucket again.</p>
+<p>Next, set variables needed for the subsequent installation steps:</p>
+<pre><code>$ export NAME=istio-workshop.k8s.local
+$ export KOPS_STATE_STORE=s3://$BUCKET_NAME
+</code></pre><p>Note the <code>k8s.local</code> suffix in the cluster name. It enforces the
+<a href="https://kops.sigs.k8s.io/gossip/" target="_blank">gossip-based</a> DNS required to skip registering a public cluster
+domain and setting up the external DNS.</p>
+<p>Generate the cluster manifest:</p>
+<pre><code>$ kops create cluster \
+    --zones=us-east-1a \
+    --master-count=1 \
+    --node-count=2 \
+    --node-size=t2.medium \
+    --master-size=t2.medium \
+    --networking=calico \
+    ${NAME}
+</code></pre><p>The above command instructs kops how to manage the cluster provisioning and what is the desired
+cluster structure:</p>
+<ul>
+<li>deploy the cluster in <code>us-east-1a</code> availability zone,</li>
+<li>provision 1 master node and 2 worker nodes,</li>
+<li>use <code>t2.medium</code> instance type for Kubernetes master node,</li>
+<li>use <code>t2.medium</code> instance type for Kubernetes worker nodes,</li>
+<li>setup <a href="https://www.projectcalico.org/" target="_blank">Calico CNI</a> for cluster networking,</li>
+<li>set cluster name to <code>istio-workshop.k8s.local</code>.</li>
+</ul>
+<p>The generated YAML manifest will be stored in the configured storage bucket. Review its contents:</p>
+<pre><code>$ kops edit cluster
+</code></pre><p>In addition, the <code>kops create</code> command displays the list of cloud resources that will be created
+during the provisioning:</p>
+<pre><code>TODO: Add sample resource specs
+</code></pre><p>The list must be <strong>carefully reviewed</strong> before proceeding to the next step.</p>
+<p>Now, provision the cluster:</p>
+<pre><code>$ kops update cluster --name istio-workshop.k8s.local --yes
+
+Cluster is starting.  It should be ready in a few minutes.
+
+Suggestions:
+ * validate cluster: kops validate cluster
+ * list nodes: kubectl get nodes --show-labels
+ * ssh to the master: ssh -i ~/.ssh/id_rsa admin@api.istio-workshop.k8s.local
+ * the admin user is specific to Debian. If not using Debian please use the appropriate user based on your OS.
+ * read about installing addons at: https://github.com/kubernetes/kops/blob/master/docs/operations/addons.md.
+</code></pre><p>It takes a while before the cluster becomes ready, but it should not take more than 10-15 minutes.
+During this time, kops creates the required cloud resources in AWS and installs Kubernetes.</p>
+<p>The cluster access configuration will be automatically generated and written to <code>~/.kube/config</code>. As
+a result, the Kubernetes client (kubectl) can be used right after the installation completes,
+without any additional configuration effort.</p>
+<h2 id="verify-the-cluster">Verify the cluster</h2>
+<p>Validate the cluster using kops <code>validate</code> utility:</p>
+<pre><code>$ kops validate cluster
+Using cluster from kubectl context: istio-workshop.k8s.local
+
+Validating cluster istio-workshop.k8s.local
+
+INSTANCE GROUPS
+NAME                ROLE    MACHINETYPE MIN MAX SUBNETS
+master-us-east-1a   Master  t2.medium   1   1   us-east-1a
+nodes               Node    t2.medium   2   2   us-east-1a
+
+NODE STATUS
+NAME                            ROLE    READY
+ip-172-20-37-195.ec2.internal   node    True
+ip-172-20-45-213.ec2.internal   node    True
+ip-172-20-54-100.ec2.internal   master  True
+
+Your cluster istio-workshop.k8s.local is ready
+</code></pre><p>The command should display: <code>Your cluster istio-workshop.k8s.local is ready</code>.</p>
+<p>Ensure that all Kubernetes nodes are healthy:</p>
+<pre><code>$ kubectl get nodes
+NAME                            STATUS   ROLES    AGE     VERSION
+ip-172-20-37-195.ec2.internal   Ready    node     3h41m   v1.16.9
+ip-172-20-45-213.ec2.internal   Ready    node     3h41m   v1.16.9
+ip-172-20-54-100.ec2.internal   Ready    master   3h43m   v1.16.9
+</code></pre><p>Ensure that all Kubernetes components are ready (inspect <code>READY</code> and <code>STATUS</code> columns):</p>
+<pre><code>$ kubectl -n kube-system get pods
+NAME                                                    READY   STATUS    RESTARTS   AGE
+calico-kube-controllers-68b7df9f67-lxd66                1/1     Running   0          3h43m
+calico-node-9zqxl                                       1/1     Running   0          3h42m
+calico-node-d5qqd                                       1/1     Running   0          3h43m
+calico-node-ltk58                                       1/1     Running   0          3h42m
+dns-controller-776cdf4ff4-m54fv                         1/1     Running   0          3h43m
+etcd-manager-events-ip-172-20-54-100.ec2.internal       1/1     Running   0          3h42m
+etcd-manager-main-ip-172-20-54-100.ec2.internal         1/1     Running   0          3h42m
+kops-controller-mxhhf                                   1/1     Running   0          3h42m
+kube-apiserver-ip-172-20-54-100.ec2.internal            1/1     Running   3          3h43m
+kube-controller-manager-ip-172-20-54-100.ec2.internal   1/1     Running   0          3h42m
+kube-dns-autoscaler-594dcb44b5-2cxx5                    1/1     Running   0          3h43m
+kube-dns-b84c667f4-46bpm                                3/3     Running   0          3h41m
+kube-dns-b84c667f4-djn7b                                3/3     Running   0          3h43m
+kube-proxy-ip-172-20-37-195.ec2.internal                1/1     Running   0          3h41m
+kube-proxy-ip-172-20-45-213.ec2.internal                1/1     Running   0          3h42m
+kube-proxy-ip-172-20-54-100.ec2.internal                1/1     Running   0          3h43m
+kube-scheduler-ip-172-20-54-100.ec2.internal            1/1     Running   0          3h42m
+</code></pre><p>If all components are healthy, you successfully provisioned a Kubernetes cluster. Proceed to the
+next chapter.</p>
 
                                 
                                 </section>
@@ -395,7 +584,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Provision a K8S cluster","level":"2.1","depth":1,"next":{"title":"Install Istio Service Mesh","level":"2.2","depth":1,"path":"setup/istio.md","ref":"setup/istio.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"setup/kubernetes.md","mtime":"2020-05-20T09:20:07.833Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-20T20:56:38.595Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Provision a K8S cluster","level":"2.1","depth":1,"next":{"title":"Install Istio Service Mesh","level":"2.2","depth":1,"path":"setup/istio.md","ref":"setup/istio.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"setup/kubernetes.md","mtime":"2020-05-30T17:38:07.678Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-30T17:40:06.034Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
