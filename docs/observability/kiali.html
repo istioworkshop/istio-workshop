@@ -352,6 +352,104 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="explore-mesh-topology-in-kiali">Explore mesh topology in Kiali</h1>
+<p><em>This chapter presents how to analyze service mesh topology and configuration using the Kiali Istio
+addon.</em></p>
+<h2 id="outline">Outline</h2>
+<p>In this chapter you will learn:</p>
+<ul>
+<li>How to access Kiali dashboard.</li>
+<li>How to analyze service mesh topology and traffic.</li>
+<li>How to examine service mesh configuration.</li>
+</ul>
+<h2 id="walkthrough">Walkthrough</h2>
+<p><a href="https://kiali.io/" target="_blank">Kiali</a> is a management console for Istio service mesh with strong observability, configuration and validation capabilities. It provides a dashboard visualizing the mesh topology
+including rich information about inter-service dependencies and traffic health (latency, errors).
+Moreover, Kiali enables inspecting and producing service mesh configuration via a web interface
+and observing how the updated configuration affects performance of individual application services.</p>
+<p>Kiali helps to answer the following questions:</p>
+<ul>
+<li>Which microservices are part of my service mesh?</li>
+<li>How are they connected?</li>
+<li>How are they performing?</li>
+<li>How can I operate on them?</li>
+</ul>
+<h3 id="access-the-dashboard">Access the dashboard</h3>
+<p>Port-forward the Kiali dashboard to your local machine:</p>
+<pre><code>$ istioctl dashboard kiali
+</code></pre><p>Your browser should startup automatically and display the dashboard. Otherwise, visit the address:
+<a href="http://localhost:20001" target="_blank">http://localhost:20001</a>.</p>
+<p>Login using the default credentials: <code>admin/admin</code>.</p>
+<h3 id="analyze-the-service-graph">Analyze the service graph</h3>
+<p>After logging in, the dashboard should present the <em>Overview</em> page, similar to:</p>
+<p><img src="../assets/images/kiali-overview-page.png" alt=""></p>
+<p>The page summarizes all Kubernetes namespaces that have services registered in the service mesh. In
+other words: namespaces that contain pods with <em>Istio proxy</em>.</p>
+<p>Click on the graph icon in the <code>default</code> namespace card. The graph icon is in the lower left of the
+namespace card and looks like a connected group of circles:</p>
+<p><img src="../assets/images/kiali-graph-icon.png" alt=""></p>
+<p>You will be presented with a service graph:</p>
+<p><img src="../assets/images/kiali-service-graph-1.png" alt=""></p>
+<p>The graph is generated automatically by Kiali from service mesh metrics collected in Prometheus.</p>
+<p>The nodes in the graph represent application services, whereas the edges reflect the communication
+paths between them. Edges coloured in green indicate healthy communication. Edges coloured in a
+different color (yellow or red) indicate communication issues - we will evaluate such scenarios
+later on in this workshop.</p>
+<p>Now, click on the node representing the <code>checkout</code> service:</p>
+<p><img src="../assets/images/kiali-service-graph-2.png" alt=""></p>
+<p>The graph should highlight the ingress and egress edges only for the <code>checkout</code> service. This way
+we can quickly lookup which services communicate with the selected service, and also which services
+the selected service communicates with.</p>
+<p>In addition, the dashboards presents basic communication metrics in the box on the right:</p>
+<ul>
+<li>operations per second (for ingress and egress traffic),</li>
+<li>success and error rates.</li>
+</ul>
+<p>Now, click on the edge between the <code>checkout</code> service and the <code>email</code> service:</p>
+<p><img src="../assets/images/kiali-service-graph-3.png" alt=""></p>
+<p>The edge should be highlighted and the dashboards presents the basic metrics for the communication
+between these two services:</p>
+<ul>
+<li>used protocol (<em>gRPC</em> in this case),</li>
+<li>operations per second,</li>
+<li>success and error rates.</li>
+</ul>
+<p>You can turn on the <em>Traffic Animation</em> in the <strong>Display</strong> settings to get the real-time graph
+experience:</p>
+<p><img src="../assets/images/kiali-service-graph-4.png" alt=""></p>
+<p>Small dots represent the traffic intensity. For intensive traffic, the dots are displayed denser and
+faster.</p>
+<h3 id="examine-the-configuration">Examine the configuration</h3>
+<p>Switch to the <em>Istio Config</em> tab:</p>
+<p><img src="../assets/images/kiali-istio-config-1.png" alt=""></p>
+<p>The dashboard presents a list of loaded Istio policies. The <code>Type</code> column describes the policy type
+(e.g., <code>VirtualService</code>, <code>DestinationRule</code>, <code>Gateway</code>). The <code>Configuration</code> column points the policy
+status - whether the pocliy validation suceeded. Note that some of the existing policies generated
+warnings. For now, ignore them.</p>
+<p>Enter the <code>frontend</code> policy. The dashboard should display the policy summary:</p>
+<p><img src="../assets/images/kiali-istio-config-2.png" alt=""></p>
+<p>You can switch to the YAML representation of the policy:</p>
+<p><img src="../assets/images/kiali-istio-config-3.png" alt=""></p>
+<p>It contains the full policy content and allows reloading the policy after modifications in the web
+editor.</p>
+<h2 id="exercises">Exercises</h2>
+<ol>
+<li>Is the inter-service communication healthy? How do you check that?</li>
+<li>What is the entry-point service of the application?</li>
+<li>What are the clients of the the application?</li>
+<li>Which services communicate with the <code>currency</code> service?</li>
+<li>Which services communicate with the <code>productcatelog</code> service?</li>
+<li>Which services does the <code>checkout</code> service commmunicates with?</li>
+<li>What is the request volume (operations per second) for <code>currency</code> service? What are its success
+and error rates?</li>
+<li>What is the request volume (operations per second) for <code>payment</code> service? What are its success
+and error rates?</li>
+<li>What protocol is used on the communication path between the <code>frontend</code> service and the
+<code>recommendation</code> service?</li>
+<li>What protocol is used on the communication path between the <code>cart</code> service and the <code>redis</code>
+service?</li>
+<li>What is the raw content of the mesh gateway policy? Are there any configuration warnings
+detected?</li>
+</ol>
 
                                 
                                 </section>
@@ -395,7 +493,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Mesh topology","level":"3.3","depth":1,"next":{"title":"Ingress gateway","level":"4.1","depth":1,"path":"traffic-management/ingress-gateway.md","ref":"traffic-management/ingress-gateway.md","articles":[]},"previous":{"title":"Distributed tracing","level":"3.2","depth":1,"path":"observability/Jaeger.md","ref":"observability/Jaeger.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"observability/kiali.md","mtime":"2020-05-20T09:21:00.136Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-03T15:48:31.276Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Mesh topology","level":"3.3","depth":1,"next":{"title":"Ingress gateway","level":"4.1","depth":1,"path":"traffic-management/ingress-gateway.md","ref":"traffic-management/ingress-gateway.md","articles":[]},"previous":{"title":"Distributed tracing","level":"3.2","depth":1,"path":"observability/Jaeger.md","ref":"observability/Jaeger.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"observability/kiali.md","mtime":"2020-06-03T17:13:57.800Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-03T17:14:55.533Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
