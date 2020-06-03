@@ -352,6 +352,72 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="analyze-request-traces-in-jaeger">Analyze request traces in Jaeger</h1>
+<p><em>This chapter introduces the concept of Distributed Tracing and presents how to analyze request
+traces using the Jaeger Istio addon.</em></p>
+<h2 id="outline">Outline</h2>
+<p>In this chapter you will learn:</p>
+<ul>
+<li>What is <em>Distributed Tracing</em> and why it is important.</li>
+<li>How Jaeger collects distributed traces from application services deployed in service mesh.</li>
+<li>How to search traces in Jaeger.</li>
+<li>How to analyze trace spans and context.</li>
+<li>How to switch between trace representations.</li>
+</ul>
+<h2 id="walkthrough">Walkthrough</h2>
+<p>Distributed tracing is a method used to profile and monitor distributed applications, especially
+those built using the microservices architecture.</p>
+<p><strong>TODO:</strong> Describe how Jaeger works</p>
+<h3 id="access-the-dashboard">Access the dashboard</h3>
+<p>Port-forward the Jaeger dashboard to your local machine:</p>
+<pre><code>$ istioctl dashboard jaeger
+</code></pre><p>Your browser should startup automatically and display the dashboard. Otherwise, visit the address:
+<a href="http://localhost:16686" target="_blank">http://localhost:16686</a>.</p>
+<h3 id="analyze-request-traces">Analyze request traces</h3>
+<p>Search traces for the <code>frontend</code> service from the last hour. Limit the results to 30 traces:</p>
+<p><img src="../assets/images/jaeger-trace-search.png" alt=""></p>
+<p>The results should be similar to:</p>
+<p><img src="../assets/images/jaeger-trace-results.png" alt=""></p>
+<p>The plot at the top presents the clustered histogram of request traces over time. Below is a list of
+captured request traces.</p>
+<p>Trace represents a complete request path through the application (i.e., multiple microservices). It
+is composed of request spans reported by individual application services. Each span informs how much
+time a given service spent on processing the request and what was the request result (success or
+error).</p>
+<p>That way we can easily infer which service introduces a bottleneck (e.g., high latency) or which
+service causes a failure in a large application.</p>
+<p>Let&apos;s inspect an arbitrary trace of length &gt;1:</p>
+<p><img src="../assets/images/jaeger-sample-trace-1.png" alt=""></p>
+<p>The above example ilustrates trace of a request handled by two services: the <code>frontend</code> service
+calls the <code>productcatalog</code> service. The entire request took <code>1.33ms</code> to complete, but <code>0.57ms</code> of
+the request was handled by the <code>productcatalog</code> service.</p>
+<p>Now, click on the <code>frontend</code> span to reveal the context information:</p>
+<p><img src="../assets/images/jaeger-sample-trace-2.png" alt=""></p>
+<p><em>Istio proxy</em> running in each pod enhances request spans with rich context information:</p>
+<ul>
+<li>content type,</li>
+<li>HTTP method,</li>
+<li>HTTP protocol,</li>
+<li>HTTP status code,</li>
+<li>request URL,</li>
+<li>request size,</li>
+<li>user agent.</li>
+</ul>
+<p>These data can be useful for debugging the particular microservice identified as anomalous.</p>
+<p>Switch to the graph representation of the trace:</p>
+<p><img src="../assets/images/jaeger-sample-trace-3.png" alt="">
+<img src="../assets/images/jaeger-sample-trace-4.png" alt=""></p>
+<p>The graph view enables you to inspect complex request traces consisting of many nested spans.</p>
+<h2 id="exercises">Exercises</h2>
+<ol>
+<li><p>Describe three distinct request paths from <code>checkout</code> service to other services. Include:</p>
+<ul>
+<li>when the request started (date, time),</li>
+<li>total request duration,</li>
+<li>request protocol, method and status code,</li>
+<li>duration of nested span.</li>
+</ul>
+</li>
+</ol>
 
                                 
                                 </section>
@@ -395,7 +461,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Distributed tracing","level":"3.2","depth":1,"next":{"title":"Mesh topology","level":"3.3","depth":1,"path":"observability/kiali.md","ref":"observability/kiali.md","articles":[]},"previous":{"title":"Service metrics","level":"3.1","depth":1,"path":"observability/grafana.md","ref":"observability/grafana.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"observability/Jaeger.md","mtime":"2020-05-20T09:20:53.427Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-03T14:24:05.580Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Distributed tracing","level":"3.2","depth":1,"next":{"title":"Mesh topology","level":"3.3","depth":1,"path":"observability/kiali.md","ref":"observability/kiali.md","articles":[]},"previous":{"title":"Service metrics","level":"3.1","depth":1,"path":"observability/grafana.md","ref":"observability/grafana.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"observability/Jaeger.md","mtime":"2020-06-03T15:30:44.948Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-03T15:31:29.423Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
