@@ -48,7 +48,7 @@ In addition, the dashboard provides essential metrics for the discovered service
 ### Analyze service dashboard
 
 Navigate to the [**Service Dashboard**](http://localhost:3000/d/LJ_uJAvmk/istio-service-dashboard)
-and pick the `productcatalogservice` service from the *Service* dropdown.
+and pick the `productcatalog` service from the *Service* dropdown.
 
 The dashboard should look similar to:
 
