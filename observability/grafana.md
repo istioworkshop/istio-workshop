@@ -1,6 +1,6 @@
 # Inspect service metrics in Grafana
 
-This chapter presents how to monitor service mesh traffic using the Grafana Istio addon.
+*This chapter presents how to monitor service mesh traffic using the Grafana Istio addon.*
 
 ## Outline
 

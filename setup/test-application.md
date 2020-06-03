@@ -1,7 +1,7 @@
 # Deploy test application
 
-This chapter presents how to install Online Boutique application for the purpose of service mesh
-evaluation.
+*This chapter presents how to install Online Boutique application for the purpose of service mesh
+evaluation.*
 
 ## Outline
 
@@ -40,8 +40,8 @@ Start with enabling the sidecar injection for the `default` namespace:
 $ kubectl label namespace default istio-injection=enabled
 ```
 
-The `istio-injection` label informs Istio Sidecar Injector running in Istio control plane to inject
-a sidecar into each new pod created in the `default` namespace.
+The `istio-injection` label informs the Istio Sidecar Injector running in Istio control plane to
+inject a sidecar into each new pod created in the `default` namespace.
 
 Sidecars running alongside application services are responsible for processing the traffic entering
 and leaving the pods. They act as local proxies capable of enforcing the requested traffic policies.

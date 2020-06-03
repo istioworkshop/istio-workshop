@@ -1,7 +1,7 @@
 # Provision a Kubernetes cluster
 
-This chapter presents how to provision a Kubernetes cluster in Amazon Web Services (AWS) using kops
-installation utility.
+*This chapter presents how to provision a Kubernetes cluster in Amazon Web Services (AWS) using kops
+installation utility.*
 
 ## Outline
 

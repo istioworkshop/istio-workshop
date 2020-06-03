@@ -1,6 +1,6 @@
 # Install Istio Service Mesh
 
-This chapter presents how to install Istio Service Mesh in the provisioned Kubernetes cluster.
+*This chapter presents how to install Istio Service Mesh in the provisioned Kubernetes cluster.*
 
 ## Outline
 
