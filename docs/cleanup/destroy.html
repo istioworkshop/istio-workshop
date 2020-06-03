@@ -349,8 +349,41 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="destroy-the-cluster">Destroy the cluster</h1>
+                                <h1 id="cleanup">Cleanup</h1>
+<h2 id="destroy-kubernetes-cluster">Destroy Kubernetes cluster</h2>
+<p>In order to delete the cluster using kops, first retrieve the S3 state store where kops maintains
+the cluster state information:</p>
+<pre><code>$ aws s3api list-buckets --region us-east-1
+-------------------------------------------------------------------------------------------------------
+|                                             ListBuckets                                             |
++-----------------------------------------------------------------------------------------------------+
+||                                              Buckets                                              ||
+|+------------------------------------+--------------------------------------------------------------+|
+||            CreationDate            |                            Name                              ||
+|+------------------------------------+--------------------------------------------------------------+|
+||  2020-06-03T12:49:06+00:00         |  istio-workshop-15904-kops-cluster-state-store               ||
+|+------------------------------------+--------------------------------------------------------------+|
+||                                               Owner                                               ||
+|+------------------------------+--------------------------------------------------------------------+|
+||          DisplayName         |                                ID                                  ||
+|+------------------------------+--------------------------------------------------------------------+|
+||  awslabsc0w768921t1588545607 |  efc35b87124f4803bc1328ab888b22a8e605a5a635db18a2f25c619067cde3a4  ||
+|+------------------------------+--------------------------------------------------------------------+|
 
+$ BUCKET_NAME=istio-workshop-15904-kops-cluster-state-store
+$ export KOPS_STATE_STORE=s3://$BUCKET_NAME
+</code></pre><p>Then, delete Kubernetes cluster in AWS using kops <code>delete</code> command:</p>
+<pre><code>$ kops delete cluster istio-workshop.k8s.local --yes
+</code></pre><p>Wait until all AWS resources are deleted. <strong>Do not interrupt the process execution</strong>. It may result
+with left-over resources that continue to consume the AWS credits.</p>
+<p>During the cluster deletion you might encouter warnings similar to:</p>
+<pre><code>Not all resources deleted; waiting before reattempting deletion
+</code></pre><pre><code>subnet:subnet-08991b365aca297fd    still has dependencies, will retry
+</code></pre><p>These warnings are normal behaviour. Ignore them.</p>
+<p>In the end, the command should inform about completed cluster deletion:</p>
+<pre><code>Deleted kubectl config for istio-workshop.k8s.local
+Deleted cluster: &quot;istio-workshop.k8s.local&quot;
+</code></pre>
                                 
                                 </section>
                             
@@ -389,7 +422,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Destroy the cluster","level":"6.1","depth":1,"previous":{"title":"Mutual TLS authentication","level":"5.1","depth":1,"path":"security/mtls.md","ref":"security/mtls.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cleanup/destroy.md","mtime":"2020-05-20T09:22:30.184Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-03T17:14:55.533Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Destroy the cluster","level":"6.1","depth":1,"previous":{"title":"Mutual TLS authentication","level":"5.1","depth":1,"path":"security/mtls.md","ref":"security/mtls.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cleanup/destroy.md","mtime":"2020-06-03T17:52:10.334Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-03T17:52:26.102Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
