@@ -10,7 +10,7 @@ In this chapter you will learn:
 * What is *Distributed Tracing* and why it is important.
 * How Jaeger collects distributed traces from application services deployed in service mesh.
 * How to search traces in Jaeger.
-* How to analyze trace spans and context.
+* How to analyze trace spans and span context.
 * How to switch between trace representations.
 
 ## Walkthrough
@@ -33,7 +33,7 @@ http://localhost:16686.
 
 ### Analyze request traces
 
-Search traces for the `frontend` service from the last hour. Limit the results to 30 traces:
+Search traces from the last hour for the `frontend` service. Limit the results to 30 traces:
 
 ![](/assets/images/jaeger-trace-search.png)
 
@@ -41,8 +41,8 @@ The results should be similar to:
 
 ![](/assets/images/jaeger-trace-results.png)
 
-The plot at the top presents the clustered histogram of request traces over time. Below is a list of
-captured request traces.
+The plot at the top presents the clustered histogram of request traces over time. Below, Jaeger
+presents a list of captured request traces.
 
 Trace represents a complete request path through the application (i.e., multiple microservices). It
 is composed of request spans reported by individual application services. Each span informs how much
@@ -64,7 +64,8 @@ Now, click on the `frontend` span to reveal the context information:
 
 ![](/assets/images/jaeger-sample-trace-2.png)
 
-*Istio proxy* running in each pod enhances request spans with rich context information:
+*Istio proxy* running in each application pod enhances request spans with rich context
+information:
 
 * content type,
 * HTTP method,
@@ -76,7 +77,15 @@ Now, click on the `frontend` span to reveal the context information:
 
 These data can be useful for debugging the particular microservice identified as anomalous.
 
-Switch to the graph representation of the trace:
+Note that without a proxy, the application would have to build the span (retrieve trace ID from
+request headers, inject context information) and sent it to the span collector on its own. That
+requires using a tracing library compatibile with application programming language.
+
+Since the proxy participates in all communication between services, it can offload the application
+from the tracing function. The tracing is transparent for the application and requires no
+configuration.
+
+Lastly, switch to the graph representation of the trace:
 
 ![](/assets/images/jaeger-sample-trace-3.png)
 ![](/assets/images/jaeger-sample-trace-4.png)
