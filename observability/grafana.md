@@ -12,8 +12,6 @@ In this chapter you will learn:
 
 ## Walkthrough
 
-### Inspect monitoring components
-
 **TODO:** Describe how metrics are collected
 
 ### Access the dashboard
@@ -21,10 +19,11 @@ In this chapter you will learn:
 Port-forward the Grafana dashboard to your local machine:
 
 ```
-$ kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana -o jsonpath='{.items[0].metadata.name}') 3000:3000
+$ istioctl dashboard grafana
 ```
 
-Then, visit the dashboard in your web browser: http://localhost:3000.
+Your browser should startup automatically and display the dashboard. Otherwise, visit the address:
+http://localhost:3000.
 
 ### Analyze mesh dashboard
 
@@ -105,4 +104,4 @@ Use the presented Grafana dashboards to answer the following questions:
 3. Are there any request errors occurring in the application at the moment? How do you check that?
 4. Which application service processes the most requests? What is its p99 latency and success rate?
 5. What is the current CPU and memory usage by Istio Pilot?
-6. Does Istio Pilot encouteres errors at the moment?\
+6. Does Istio Pilot encouteres errors at the moment?
