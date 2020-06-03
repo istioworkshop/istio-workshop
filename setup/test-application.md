@@ -1,14 +1,15 @@
 # Deploy test application
 
-*This chapter presents how to install Online Boutique application for the purpose of service mesh
-evaluation.*
+*This chapter presents how to install the Online Boutique application for the purpose of service
+mesh evaluation.*
 
 ## Outline
 
 In this chapter you will learn:
 
-* How to install the test application.
+* How to install the Online Boutique test application.
 * How to verify the installation.
+* How to access the application.
 
 ## Walkthrough
 
@@ -118,7 +119,7 @@ shippingservice-7d87945947-fl4xr         2/2     Running   0          19m
 
 ### Access the app
 
-Apply Istio manifests to expose the application to the public network:
+Apply Istio manifests to expose the application outside the Kubernetes cluster:
 
 ```
 $ kubectl -n default apply -f ./release/istio-manifests.yaml

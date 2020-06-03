@@ -6,7 +6,7 @@
 
 In this chapter you will learn:
 
-* How to analyze service mesh traffic in the global dimension.
+* How to analyze service mesh traffic globally.
 * How to analyze traffic for a particular application service.
 * How to monitor the operation of individual components in Istio control plane.
 
