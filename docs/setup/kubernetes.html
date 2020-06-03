@@ -352,6 +352,8 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="provision-a-kubernetes-cluster">Provision a Kubernetes cluster</h1>
+<p>This chapter presents how to provision a Kubernetes cluster in Amazon Web Services (AWS) using kops
+installation utility.</p>
 <h2 id="outline">Outline</h2>
 <p>In this chapter you will learn:</p>
 <ul>
@@ -439,6 +441,7 @@ platforms use the guide in the <a href="https://kops.sigs.k8s.io/getting_started
 <pre><code>$ kops version
 Version 1.16.2
 </code></pre><h3 id="provision-a-cluster">Provision a cluster</h3>
+<p>Now that all required client binaries are installed, we can proceed to the cluster installation.</p>
 <p>First, create S3 bucket for storing the cluster configuration maintained by kops:</p>
 <pre><code>$ BUCKET_NAME=istio-workshop-$RANDOM-kops-cluster-state-store
 $ aws s3api create-bucket --bucket $BUCKET_NAME --region us-east-1
@@ -475,7 +478,83 @@ cluster structure:</p>
 <pre><code>$ kops edit cluster
 </code></pre><p>In addition, the <code>kops create</code> command displays the list of cloud resources that will be created
 during the provisioning:</p>
-<pre><code>TODO: Add sample resource specs
+<pre><code>(...)
+I0603 14:49:34.073018   71688 apply_cluster.go:556] Gossip DNS: skipping DNS validation
+(...)
+Will create resources:
+  AutoscalingGroup/master-us-east-1a.masters.istio-workshop.k8s.local
+      Granularity             1Minute
+      LaunchConfiguration     name:master-us-east-1a.masters.istio-workshop.k8s.local
+      MaxSize                 1
+      Metrics                 [GroupDesiredCapacity, GroupInServiceInstances, GroupMaxSize, GroupMinSize, GroupPendingInstances, GroupStandbyInstances, GroupTerminatingInstances, GroupTotalInstances]
+      MinSize                 1
+      Subnets                 [name:us-east-1a.istio-workshop.k8s.local]
+      SuspendProcesses        []
+      Tags                    {KubernetesCluster: istio-workshop.k8s.local, Name: master-us-east-1a.masters.istio-workshop.k8s.local, k8s.io/role/master: 1, kops.k8s.io/instancegroup: master-us-east-1a, k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: master-us-east-1a}
+  AutoscalingGroup/nodes.istio-workshop.k8s.local
+      Granularity             1Minute
+      LaunchConfiguration     name:nodes.istio-workshop.k8s.local
+      MaxSize                 2
+      Metrics                 [GroupDesiredCapacity, GroupInServiceInstances, GroupMaxSize, GroupMinSize, GroupPendingInstances, GroupStandbyInstances, GroupTerminatingInstances, GroupTotalInstances]
+      MinSize                 2
+      Subnets                 [name:us-east-1a.istio-workshop.k8s.local]
+      SuspendProcesses        []
+      Tags                    {k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: nodes, KubernetesCluster: istio-workshop.k8s.local, Name: nodes.istio-workshop.k8s.local, k8s.io/role/node: 1, kops.k8s.io/instancegroup: nodes}
+(...)
+  LaunchConfiguration/master-us-east-1a.masters.istio-workshop.k8s.local
+      AssociatePublicIP       true
+      IAMInstanceProfile      name:masters.istio-workshop.k8s.local id:masters.istio-workshop.k8s.local
+      ImageID                 kope.io/k8s-1.16-debian-stretch-amd64-hvm-ebs-2020-01-17
+      InstanceType            t2.medium
+      RootVolumeDeleteOnTermination    true
+      RootVolumeSize          64
+      RootVolumeType          gp2
+      SSHKey                  name:kubernetes.istio-workshop.k8s.local-36:06:60:b5:d7:4b:b5:e6:08:0c:39:12:80:44:76:4a id:kubernetes.istio-workshop.k8s.local-36:06:60:b5:d7:4b:b5:e6:08:0c:39:12:80:44:76:4a
+      SecurityGroups          [name:masters.istio-workshop.k8s.local]
+      SpotPrice
+  LaunchConfiguration/nodes.istio-workshop.k8s.local
+      AssociatePublicIP       true
+      IAMInstanceProfile      name:nodes.istio-workshop.k8s.local id:nodes.istio-workshop.k8s.local
+      ImageID                 kope.io/k8s-1.16-debian-stretch-amd64-hvm-ebs-2020-01-17
+      InstanceType            t2.medium
+      RootVolumeDeleteOnTermination    true
+      RootVolumeSize          128
+      RootVolumeType          gp2
+      SSHKey                  name:kubernetes.istio-workshop.k8s.local-36:06:60:b5:d7:4b:b5:e6:08:0c:39:12:80:44:76:4a id:kubernetes.istio-workshop.k8s.local-36:06:60:b5:d7:4b:b5:e6:08:0c:39:12:80:44:76:4a
+      SecurityGroups          [name:nodes.istio-workshop.k8s.local]
+      SpotPrice
+(...)
+  LoadBalancer/api.istio-workshop.k8s.local
+      LoadBalancerName        api-istio-workshop-k8s-lo-n58mdh
+      Subnets                 [name:us-east-1a.istio-workshop.k8s.local]
+      SecurityGroups          [name:api-elb.istio-workshop.k8s.local]
+      Listeners               {443: {&quot;InstancePort&quot;:443,&quot;SSLCertificateID&quot;:&quot;&quot;}}
+      HealthCheck             {&quot;Target&quot;:&quot;SSL:443&quot;,&quot;HealthyThreshold&quot;:2,&quot;UnhealthyThreshold&quot;:2,&quot;Interval&quot;:10,&quot;Timeout&quot;:5}
+      ConnectionSettings      {&quot;IdleTimeout&quot;:300}
+      CrossZoneLoadBalancing    {&quot;Enabled&quot;:false}
+      SSLCertificateID
+      Tags                    {Name: api.istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local, kubernetes.io/cluster/istio-workshop.k8s.local: owned}
+(...)
+  SecurityGroup/masters.istio-workshop.k8s.local
+      Description             Security group for masters
+      VPC                     name:istio-workshop.k8s.local
+      RemoveExtraRules        [port=22, port=443, port=2380, port=2381, port=4001, port=4002, port=4789, port=179]
+      Tags                    {Name: masters.istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local, kubernetes.io/cluster/istio-workshop.k8s.local: owned}
+
+  SecurityGroup/nodes.istio-workshop.k8s.local
+      Description             Security group for nodes
+      VPC                     name:istio-workshop.k8s.local
+      RemoveExtraRules        [port=22]
+      Tags                    {Name: nodes.istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local, kubernetes.io/cluster/istio-workshop.k8s.local: owned}
+(...)
+  VPC/istio-workshop.k8s.local
+      CIDR                    172.20.0.0/16
+      EnableDNSHostnames      true
+      EnableDNSSupport        true
+      Shared                  false
+      Tags                    {kubernetes.io/cluster/istio-workshop.k8s.local: owned, Name: istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local}
+(...)
+Cluster configuration has been created.
 </code></pre><p>The list must be <strong>carefully reviewed</strong> before proceeding to the next step.</p>
 <p>Now, provision the cluster:</p>
 <pre><code>$ kops update cluster --name istio-workshop.k8s.local --yes
@@ -539,8 +618,8 @@ kube-proxy-ip-172-20-37-195.ec2.internal                1/1     Running   0     
 kube-proxy-ip-172-20-45-213.ec2.internal                1/1     Running   0          3h42m
 kube-proxy-ip-172-20-54-100.ec2.internal                1/1     Running   0          3h43m
 kube-scheduler-ip-172-20-54-100.ec2.internal            1/1     Running   0          3h42m
-</code></pre><p>If all components are healthy, you successfully provisioned a Kubernetes cluster. Proceed to the
-next chapter.</p>
+</code></pre><p>If all components are operating without problems, you successfully provisioned a Kubernetes cluster.
+Proceed to the next chapter.</p>
 
                                 
                                 </section>
@@ -584,7 +663,7 @@ next chapter.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Provision a K8S cluster","level":"2.1","depth":1,"next":{"title":"Install Istio Service Mesh","level":"2.2","depth":1,"path":"setup/istio.md","ref":"setup/istio.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"setup/kubernetes.md","mtime":"2020-05-30T17:38:07.678Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-30T17:40:06.034Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Provision a K8S cluster","level":"2.1","depth":1,"next":{"title":"Install Istio Service Mesh","level":"2.2","depth":1,"path":"setup/istio.md","ref":"setup/istio.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"setup/kubernetes.md","mtime":"2020-06-03T12:58:30.274Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-03T14:24:05.580Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

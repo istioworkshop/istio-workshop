@@ -352,6 +352,84 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="inspect-service-metrics-in-grafana">Inspect service metrics in Grafana</h1>
+<p>This chapter presents how to monitor service mesh traffic using the Grafana Istio addon.</p>
+<h2 id="outline">Outline</h2>
+<p>In this chapter you will learn:</p>
+<ul>
+<li>How to analyze service mesh traffic in the global dimension.</li>
+<li>How to analyze traffic for a particular application service.</li>
+<li>How to monitor the operation of individual components in Istio control plane.</li>
+</ul>
+<h2 id="walkthrough">Walkthrough</h2>
+<h3 id="inspect-monitoring-components">Inspect monitoring components</h3>
+<p><strong>TODO:</strong> Describe how metrics are collected</p>
+<h3 id="access-the-dashboard">Access the dashboard</h3>
+<p>Port-forward the Grafana dashboard to your local machine:</p>
+<pre><code>$ kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana -o jsonpath=&apos;{.items[0].metadata.name}&apos;) 3000:3000
+</code></pre><p>Then, visit the dashboard in your web browser: <a href="http://localhost:3000" target="_blank">http://localhost:3000</a>.</p>
+<h3 id="analyze-mesh-dashboard">Analyze mesh dashboard</h3>
+<p>Navigate to the <a href="http://localhost:3000/d/G8wLrJIZk/istio-mesh-dashboard" target="_blank"><strong>Mesh Dashboard</strong></a>. It
+should look similar to:</p>
+<p><img src="../assets/images/grafana-mesh-dashboard-1.png" alt=""></p>
+<p>The dashboard provides the global view of the service mesh:</p>
+<ul>
+<li>total number of discovered services,</li>
+<li>global request volume expressed in <em>operations per second</em> (ops),</li>
+<li>global success rate - percentage of requests completed with success,</li>
+<li>total failed requests - number of requests ended with 4xx and 5xx HTTP error codes.</li>
+</ul>
+<p>In addition, the dashboard provides essential metrics for the discovered services:</p>
+<ul>
+<li>operations per second,</li>
+<li>p50, p90, p99 latency,</li>
+<li>success rate.</li>
+</ul>
+<h3 id="analyze-service-dashboard">Analyze service dashboard</h3>
+<p>Navigate to the <a href="http://localhost:3000/d/LJ_uJAvmk/istio-service-dashboard" target="_blank"><strong>Service Dashboard</strong></a>
+and pick the <code>productcatalogservice</code> service from the <em>Service</em> dropdown.</p>
+<p>The dashboard should look similar to:</p>
+<p><img src="../assets/images/grafana-service-dashboard-1.png" alt="">
+<img src="../assets/images/grafana-service-dashboard-2.png" alt=""></p>
+<p>The dashboard provides detailed metrics for the selected service:</p>
+<ul>
+<li>client/server request volume,</li>
+<li>client/server success rate,</li>
+<li>client/server request duration,</li>
+<li>incoming requests by source,</li>
+<li>incoming success rate by source,</li>
+<li>incoming request duration by source,</li>
+<li>incoming request size by source,</li>
+<li>TCP received/sent bytes (only for raw TCP traffic).</li>
+</ul>
+<p>Note that you can use the <em>Service</em> dropdown to switch between inspected services. Moreover, you can
+view the metrics in the context of a particular service client by using the <em>Client workload</em>
+dropdown.</p>
+<h3 id="analyze-pilot-dashboard">Analyze Pilot dashboard</h3>
+<p>Navigate to the
+<a href="http://localhost:3000/d/3--MLVZZk/istio-pilot-dashboard?orgId=1&amp;refresh=5m" target="_blank"><strong>Pilot Dashboard</strong></a>.</p>
+<p>It provides metrics related to <em>Istio Pilot</em> component deployed in the Istio control plane.</p>
+<p>The first part of the dashboard describes the usage of system resources (CPU, memory, disk):</p>
+<p><img src="../assets/images/grafana-pilot-dashboard-1.png" alt=""></p>
+<p>The second part presents metrics specific to <em>Pilot</em> operation, for instance:</p>
+<ul>
+<li>Pilot pushes - frequency of configuration distribution to sidecar proxies,</li>
+<li>Pilot errors - number of errors encountered during configuration rendering and distrubution,</li>
+<li>Proxy push time - time needed to synchronize configuration to a proxy.</li>
+</ul>
+<p><img src="../assets/images/grafana-pilot-dashboard-2.png" alt=""></p>
+<p>Note, each component in the control plane provides a similar monitoring dashboard:</p>
+<p><img src="../assets/images/grafana-all-dashboards.png" alt=""></p>
+<p>Inspect them to identify what metrics are avilable for <em>Galley</em>, <em>Citadel</em> and <em>Mixer</em>.</p>
+<h2 id="exercises">Exercises</h2>
+<p>Use the presented Grafana dashboards to answer the following questions:</p>
+<ol>
+<li>How many ops are being currently processed by the application?</li>
+<li>What is the global success rate?</li>
+<li>Are there any request errors occurring in the application at the moment? How do you check that?</li>
+<li>Which application service processes the most requests? What is its p99 latency and success rate?</li>
+<li>What is the current CPU and memory usage by Istio Pilot?</li>
+<li>Does Istio Pilot encouteres errors at the moment?\</li>
+</ol>
 
                                 
                                 </section>
@@ -395,7 +473,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Service metrics","level":"3.1","depth":1,"next":{"title":"Distributed tracing","level":"3.2","depth":1,"path":"observability/Jaeger.md","ref":"observability/Jaeger.md","articles":[]},"previous":{"title":"Deploy test application","level":"2.3","depth":1,"path":"setup/test-application.md","ref":"setup/test-application.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"observability/grafana.md","mtime":"2020-05-20T09:20:38.011Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-30T17:40:06.034Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Service metrics","level":"3.1","depth":1,"next":{"title":"Distributed tracing","level":"3.2","depth":1,"path":"observability/Jaeger.md","ref":"observability/Jaeger.md","articles":[]},"previous":{"title":"Deploy test application","level":"2.3","depth":1,"path":"setup/test-application.md","ref":"setup/test-application.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"observability/grafana.md","mtime":"2020-06-03T14:23:17.375Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-03T14:24:05.580Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

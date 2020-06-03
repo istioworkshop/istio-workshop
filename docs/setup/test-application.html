@@ -352,6 +352,8 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="deploy-test-application">Deploy test application</h1>
+<p>This chapter presents how to install Online Boutique application for the purpose of service mesh
+evaluation.</p>
 <h2 id="outline">Outline</h2>
 <p>In this chapter you will learn:</p>
 <ul>
@@ -376,8 +378,8 @@ microservices. Internally, the microservices communicate using the gRPC protocol
 <h3 id="install-the-app">Install the app</h3>
 <p>Start with enabling the sidecar injection for the <code>default</code> namespace:</p>
 <pre><code>$ kubectl label namespace default istio-injection=enabled
-</code></pre><p>The <code>istio-injection</code> label informs Istio Sidecar Injector running in Istio control plane to inject
-a sidecar into each new pod created in the <code>default</code> namespace.</p>
+</code></pre><p>The <code>istio-injection</code> label informs the Istio Sidecar Injector running in Istio control plane to
+inject a sidecar into each new pod created in the <code>default</code> namespace.</p>
 <p>Sidecars running alongside application services are responsible for processing the traffic entering
 and leaving the pods. They act as local proxies capable of enforcing the requested traffic policies.
 Sidecars are the key building block required to form a service mesh. We will inspect them later.</p>
@@ -487,7 +489,7 @@ the cart and go througuh the checkout process.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Deploy test application","level":"2.3","depth":1,"next":{"title":"Service metrics","level":"3.1","depth":1,"path":"observability/grafana.md","ref":"observability/grafana.md","articles":[]},"previous":{"title":"Install Istio Service Mesh","level":"2.2","depth":1,"path":"setup/istio.md","ref":"setup/istio.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"setup/test-application.md","mtime":"2020-05-30T14:05:20.433Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-30T17:40:06.034Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Deploy test application","level":"2.3","depth":1,"next":{"title":"Service metrics","level":"3.1","depth":1,"path":"observability/grafana.md","ref":"observability/grafana.md","articles":[]},"previous":{"title":"Install Istio Service Mesh","level":"2.2","depth":1,"path":"setup/istio.md","ref":"setup/istio.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"setup/test-application.md","mtime":"2020-06-03T13:09:41.537Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-03T14:24:05.580Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
