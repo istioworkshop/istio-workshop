@@ -53,14 +53,14 @@ Sidecars are the key building block required to form a service mesh. We will ins
 Now, clone the application repository from Github:
 
 ```
-$ git clone https://github.com/GoogleCloudPlatform/microservices-demo.git
+$ git clone https://github.com/istioworkshop/microservices-demo.git
 $ cd ./microservices-demo
 ```
 
 Apply Kubernetes manifests:
 
 ```
-$ kubectl -n default apply -f ./release/kubernetes-manifests.yaml
+$ kubectl -n default apply -f ./release/kubernetes/manifests.yaml
 ```
 
 That will create the required Kubernetes deployments and services:
