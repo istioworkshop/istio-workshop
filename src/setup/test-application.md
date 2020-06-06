@@ -9,14 +9,13 @@ In this chapter you will learn:
 
 * How to install the Online Boutique test application.
 * How to verify the installation.
-* How to access the application.
 
 ## Walkthrough
 
 For the purpose of this workshop we will use the test application named
 [**Online Boutique**](https://github.com/GoogleCloudPlatform/microservices-demo) (previously: Hipster
 Shop) provided by the Google Cloud Platform team. The application will allow us to evaluate several
-service mesh scenarios, including traffic routing, traffic shifting, and circuit breaking.
+service mesh scenarios, including traffic routing, and traffic shifting, and circuit breaking.
 
 Online Boutique is a cloud-native microservices demo. It consists of 10 microservices, written in
 polyglot programming languages (Go, C#, Node.js, Python, Java), that implement a web-based
@@ -32,6 +31,9 @@ The application architecture is presented below:
 The frontend service is an entry point to the application. It exposes an HTTP endpoint for its
 clients (web browser, load generator), providing the content compiled from the integrated
 microservices. Internally, the microservices communicate using the gRPC protocol.
+
+The load generator populates random requests to the application to simulate user behaviour. That
+enables evaluating service mesh scenarios under load.
 
 ### Install the app
 

@@ -382,5 +382,5 @@ kube-proxy-ip-172-20-54-100.ec2.internal                1/1     Running   0     
 kube-scheduler-ip-172-20-54-100.ec2.internal            1/1     Running   0          3h42m
 ```
 
-If all components are operating without problems, you successfully provisioned a Kubernetes cluster.
-Proceed to the next chapter.
+If all components are operating without problems, you successfully provisioned the Kubernetes
+cluster. Proceed to the next chapter.

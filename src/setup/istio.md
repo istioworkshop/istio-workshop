@@ -6,9 +6,9 @@
 
 In this chapter you will learn:
 
-* How to setup and use the Istio management utility - `istioctl`.
-* How to use the binary to install Istio control plane.
-* How to verify the installation.
+* How to setup and use the Istio management utility `istioctl`.
+* How to use `istioctl` to install Istio control plane.
+* How to verify the Istio installation.
 
 ## Walkthrough
 
