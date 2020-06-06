@@ -19,7 +19,6 @@
 * [Ingress gateway](traffic-management/ingress-gateway.md)
 * [Traffic routing](traffic-management/traffic-routing.md)
 * [Traffic shifting](traffic-management/traffic-shifting.md)
-* [Circuit breaking](traffic-management/circuit-breaking.md)
 
 ## Cleanup
 
