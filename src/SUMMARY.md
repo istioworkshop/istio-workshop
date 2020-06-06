@@ -22,10 +22,6 @@
 * [Fault injection](traffic-management/fault-injection.md)
 * [Circuit breaking](traffic-management/circuit-breaking.md)
 
-## Security
-
-* [Mutual TLS authentication](security/mtls.md)
-
 ## Cleanup
 
 * [Destroy the cluster](cleanup/destroy.md)
