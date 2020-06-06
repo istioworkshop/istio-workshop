@@ -11,8 +11,8 @@ tmp_dir=$(mktemp -d)
 # Rebuild the book in tmp directory
 gitbook build ./src $tmp_dir
 
-# Move rendered content to public directory
-mv $tmp_dir/* ./public/
+# Sync rendered content to public directory
+rsync -avz --exclude ".git" --delete $tmp_dir/ ./public
 
 # Remove tmp directory
 rm -rf $tmp_dir
