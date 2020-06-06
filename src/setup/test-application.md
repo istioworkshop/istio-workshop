@@ -121,32 +121,3 @@ shippingservice-v3-677b68d6bf-jmnjc         2/2     Running       0          71s
 
 Note that some application services are deployed in multiple versions, for instance, `emailservice`
 and `shippingservice`.
-
-### Access the app
-
-Apply Istio manifests to expose the application outside the Kubernetes cluster:
-
-```
-$ kubectl -n default apply -f ./release/istio-manifests.yaml
-```
-
-```
-gateway.networking.istio.io/frontend-gateway created
-virtualservice.networking.istio.io/frontend-ingress created
-virtualservice.networking.istio.io/frontend created
-serviceentry.networking.istio.io/whitelist-egress-googleapis created
-serviceentry.networking.istio.io/whitelist-egress-google-metadata created
-```
-
-Obtain the hostname address of the Istio Ingress Gateway:
-
-```
-$ kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
-a50936c539b864c85a16962a7dcad24b-1660651843.us-east-1.elb.amazonaws.com
-```
-
-Visit the address in your web browser (Chrome, Firefox). It should display the Online Boutique
-web page.
-
-Explore the application to get familiar with its functionality. For instance, try to add products to
-the cart and go througuh the checkout process.
