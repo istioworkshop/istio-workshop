@@ -1,6 +1,6 @@
 # Traffic routing
 
-*This chapter presents how to configure routing between services in the mesh.*
+*This chapter presents how to configure version routing between services in the mesh.*
 
 ## Outline
 
@@ -10,8 +10,6 @@ In this chapter you will learn:
 * How to route the traffic to a specific service version.
 
 ## Walkthrough
-
-### Route traffic to a specific app version
 
 Open the Kiali dashboard:
 
@@ -24,6 +22,8 @@ Then, switch to the graph view and select `Versioned app graph` type from the gr
 ![](/assets/images/traffic-routing-1.png)
 
 Note that due to multiple versions of some application services, traffic is distributed to all versions using Round Robin balancing algorithm. In case, each service version implements different business logic, balancing traffic to all versions can potentially lead to undesirable side effects and harm user experience. Typically, we should strive to handle user traffic only through one version of the service.
+
+### Route traffic to a specific app version
 
 Let's start with the `shippingservice`.
 
@@ -68,7 +68,7 @@ $ kubectl -n default apply -f ./release/istio/shippingservice-vs.yaml
 virtualservice.networking.istio.io/shippingservice created
 ```
 
-The former policy specifies named service subsets which group service instances by version:
+The former uses pod labels to specify named service subsets which group service endpoints by version:
 
 ```
 $ kubectl -n default describe dr shippingservice
@@ -92,7 +92,7 @@ Spec:
     Name:       v3
 ```
 
-The latter, uses the defined service subsets to route the traffic to the proper service version:
+The latter uses the defined service subsets to route the traffic to the proper service version:
 
 ```
 $ kubectl -n default describe vs shippingservice
@@ -120,7 +120,7 @@ The service node in the graph should be marked with a purple virtual service ico
 
 ## Exercises
 
-1. Apply `DestinationRule` and `VirtualService` policies to all services deployed in the service mesh. Regardless of how many versions a given service provides, it is a good practice to configure the proper service routing for each service.
+1. Apply `DestinationRule` and `VirtualService` policies to all services deployed in the service mesh regardless of how many versions each service provides.
 
 2. Route `productcatelog` traffic to version `v2`.
 
