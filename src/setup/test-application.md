@@ -52,13 +52,7 @@ Now, clone the application repository from Github:
 
 ```
 $ git clone https://github.com/GoogleCloudPlatform/microservices-demo.git
-```
-
-Enter the repository and checkout the proper version:
-
-```
 $ cd ./microservices-demo
-$ git checkout -b v0.2.0 tags/v0.2.0
 ```
 
 Apply Kubernetes manifests:
@@ -70,29 +64,33 @@ $ kubectl -n default apply -f ./release/kubernetes-manifests.yaml
 That will create the required Kubernetes deployments and services:
 
 ```
-deployment.apps/emailservice created
+deployment.apps/emailservice-v1 created
+deployment.apps/emailservice-v2 created
 service/emailservice created
-deployment.apps/checkoutservice created
+deployment.apps/checkoutservice-v1 created
 service/checkoutservice created
-deployment.apps/recommendationservice created
+deployment.apps/recommendationservice-v1 created
 service/recommendationservice created
-deployment.apps/frontend created
+deployment.apps/frontend-v1 created
 service/frontend created
 service/frontend-external created
-deployment.apps/paymentservice created
+deployment.apps/paymentservice-v1 created
 service/paymentservice created
-deployment.apps/productcatalogservice created
+deployment.apps/productcatalogservice-v1 created
+deployment.apps/productcatalogservice-v2 created
 service/productcatalogservice created
-deployment.apps/cartservice created
+deployment.apps/cartservice-v1 created
 service/cartservice created
 deployment.apps/loadgenerator created
-deployment.apps/currencyservice created
+deployment.apps/currencyservice-v1 created
 service/currencyservice created
-deployment.apps/shippingservice created
+deployment.apps/shippingservice-v1 created
+deployment.apps/shippingservice-v2 created
+deployment.apps/shippingservice-v3 created
 service/shippingservice created
-deployment.apps/redis-cart created
+deployment.apps/redis-cart-v1 created
 service/redis-cart created
-deployment.apps/adservice created
+deployment.apps/adservice-v1 created
 service/adservice created
 ```
 
@@ -102,20 +100,27 @@ Ensure that all deployed pods are running (inspect `READY` column):
 
 ```
 $ kubectl -n default get pods
-NAME                                     READY   STATUS    RESTARTS   AGE
-adservice-687b58699c-766hv               2/2     Running   0          19m
-cartservice-778cffc8f6-9klmn             2/2     Running   2          20m
-checkoutservice-98cf4f4c-5gmcr           2/2     Running   0          20m
-currencyservice-c69c86b7c-zsl7c          2/2     Running   0          20m
-emailservice-5db6c8b59f-pxjmq            2/2     Running   0          20m
-frontend-8d8958c77-pctms                 2/2     Running   0          20m
-loadgenerator-6bf9fd5bc9-kmlw2           2/2     Running   3          20m
-paymentservice-698f684cf9-9qs2m          2/2     Running   0          20m
-productcatalogservice-789c77b8dc-p595c   2/2     Running   0          20m
-recommendationservice-75d7cd8d5c-2w4nv   2/2     Running   0          20m
-redis-cart-5f59546cdd-tglxz              2/2     Running   0          19m
-shippingservice-7d87945947-fl4xr         2/2     Running   0          19m
+NAME                                        READY   STATUS    RESTARTS   AGE
+adservice-v1-56bbbd9bb9-hfmxw               2/2     Running       0          15m
+cartservice-v1-79c46c8d45-zmjjn             2/2     Running       2          15m
+checkoutservice-v1-f6c695857-k8mxx          2/2     Running       0          15m
+currencyservice-v1-697b4c8f99-mwbjz         2/2     Running       0          15m
+emailservice-v1-645bd47fc9-chbht            2/2     Running       0          16m
+emailservice-v2-646bd95f7b-5bh25            2/2     Running       0          16m
+frontend-v1-69875769bf-n7wct                2/2     Running       0          15m
+loadgenerator-6bf9fd5bc9-2d778              2/2     Running       3          15m
+paymentservice-v1-868dff5bbb-slkcv          2/2     Running       0          15m
+productcatalogservice-v1-79b8ddc995-skss5   2/2     Running       0          15m
+productcatalogservice-v2-7dc5d96f5d-jcgr6   2/2     Running       0          11m
+recommendationservice-v1-f47c98849-p2nvh    2/2     Running       0          15m
+redis-cart-v1-65b44b7949-rszpq              2/2     Running       0          15m
+shippingservice-v1-5fff674495-pkcdd         2/2     Running       0          15m
+shippingservice-v2-6fc7489bdb-tnp2v         2/2     Running       0          72s
+shippingservice-v3-677b68d6bf-jmnjc         2/2     Running       0          71s
 ```
+
+Note that some application services are deployed in multiple versions, for instance, `emailservice`
+and `shippingservice`.
 
 ### Access the app
 
