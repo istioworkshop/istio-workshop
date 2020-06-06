@@ -3,16 +3,25 @@
 # If a command fails then the deploy stops
 set -e
 
-printf "\033[0;32mRebuilding book...\033[0m\n"
+printf "\033[0;32mRebuilding the book...\033[0m\n"
 
-# Remove present content
-rm -rf docs
+# Create tmp directory
+tmp_dir=$(mktemp -d)
 
-# Rebuild the book
-gitbook build . docs
+# Rebuild the book in tmp directory
+gitbook build ./src $tmp_dir
 
-# Stage changes
-git add docs
+# Move rendered content to public directory
+mv $tmp_dir/* ./public/
+
+# Remove tmp directory
+rm -rf $tmp_dir
+
+# Go to public folder
+cd public
+
+# Add changes to git
+git add .
 
 # Commit changes
 msg="Rebuild book $(date)"
