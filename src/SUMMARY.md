@@ -1,6 +1,7 @@
 # Summary
 
 * [Introduction](README.md)
+* [Workshop hints](hints.md)
 
 ## Setup
 
