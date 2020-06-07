@@ -6,6 +6,7 @@
 
 In this chapter you will learn:
 
+* How to access the Grafana dashboard.
 * How to analyze service mesh traffic globally.
 * How to analyze traffic for a particular application service.
 * How to monitor the operation of individual components in Istio control plane.

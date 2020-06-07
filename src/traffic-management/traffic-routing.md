@@ -17,7 +17,7 @@ Open the Kiali dashboard:
 $ istioctl dashboard kiali
 ```
 
-Then, switch to the graph view and select `Versioned app graph` type from the graph dropdown. It should display a similar structure:
+Then, switch to the graph view and select *Versioned app graph* type from the graph dropdown. It should display a similar structure:
 
 ![](/assets/images/traffic-routing-1.png)
 
@@ -116,11 +116,13 @@ After applying the policies, the traffic should be routed only to the version `v
 
 ![](/assets/images/traffic-routing-2.png)
 
+It might take a while until the configuration is distributed to the proxies and Kiali infers new comunication pattern from collected metrics.
+
 The service node in the graph should be marked with a purple virtual service icon.
 
 ## Exercises
 
-1. Apply `DestinationRule` and `VirtualService` policies to all services deployed in the service mesh regardless of how many versions each service provides.
+1. Apply `DestinationRule` and `VirtualService` policies to all services deployed in the service mesh regardless of how many versions each service provides. Route the traffic to version `v1` of each service.
 
 2. Route `productcatelog` traffic to version `v2`.
 
