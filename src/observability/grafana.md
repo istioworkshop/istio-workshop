@@ -12,7 +12,13 @@ In this chapter you will learn:
 
 ## Walkthrough
 
-**TODO:** Describe how metrics are collected
+Most of the service mesh metrics are collected through the presence of a sidecar proxy installed in each application pod.
+
+Each proxy generates a rich set of metrics describing the inbound and outbound traffic passing through the proxy. They also provide detailed statistics about the administrative functions of the proxy itself, including configuration and health information.
+
+In addition, Istio provides a set of aggregated service-oriented metrics for monitoring inter-service communication. These metrics cover the four fundamental service health indicators: latency, traffic, errors, and saturation.
+
+The Istio control plane also provides a collection of self-monitoring metrics. These metrics allow monitoring the behavior of Istio itself.
 
 ### Access the dashboard
 
@@ -75,13 +81,13 @@ dropdown.
 Navigate to the
 [**Pilot Dashboard**](http://localhost:3000/d/3--MLVZZk/istio-pilot-dashboard?orgId=1&refresh=5m).
 
-It provides metrics related to *Istio Pilot* component deployed in the Istio control plane.
+It provides metrics related to Istio Pilot component deployed in the Istio control plane.
 
 The first part of the dashboard describes the usage of system resources (CPU, memory, disk):
 
 ![](/assets/images/grafana-pilot-dashboard-1.png)
 
-The second part presents metrics specific to *Pilot* operation, for instance:
+The second part presents metrics specific to Pilot operation, for instance:
 
 * Pilot pushes - frequency of configuration distribution to sidecar proxies,
 * Pilot errors - number of errors encountered during configuration rendering and distrubution,
@@ -93,7 +99,7 @@ Note, each component in the control plane provides a similar monitoring dashboar
 
 ![](/assets/images/grafana-all-dashboards.png)
 
-Inspect them to identify what metrics are avilable for *Galley*, *Citadel* and *Mixer*.
+Inspect them to identify what metrics are avilable for Galey, Citadel and Mixer.
 
 ## Exercises
 
@@ -104,4 +110,4 @@ Use the presented Grafana dashboards to answer the following questions:
 3. Are there any request errors occurring in the application at the moment? How do you check that?
 4. Which application service processes the most requests? What is its p99 latency and success rate?
 5. What is the current CPU and memory usage by Istio Pilot?
-6. Does Istio Pilot encouteres errors at the moment?
+6. Does Istio Pilot encouteres any errors at the moment?
