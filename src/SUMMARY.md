@@ -24,4 +24,5 @@
 
 ## Cleanup
 
+* [Stop the cluster](cleanup/stop.md)
 * [Destroy the cluster](cleanup/destroy.md)
