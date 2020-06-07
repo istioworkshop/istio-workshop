@@ -1,4 +1,4 @@
-# Ingress gateway
+# Fault injection
 
 *This chapter presents how to inject faults into service mesh to test application resilency against service failures.*
 
