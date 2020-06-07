@@ -19,6 +19,7 @@
 * [Ingress gateway](traffic-management/ingress-gateway.md)
 * [Traffic routing](traffic-management/traffic-routing.md)
 * [Traffic shifting](traffic-management/traffic-shifting.md)
+* [Fault injection](traffic-management/fault-injection.md)
 
 ## Cleanup
 
