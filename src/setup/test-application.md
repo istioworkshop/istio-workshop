@@ -96,6 +96,9 @@ deployment.apps/adservice-v1 created
 service/adservice created
 ```
 
+Note that some application services are deployed in multiple versions, for instance, `emailservice`
+and `shippingservice`.
+
 ### Verify installation
 
 Ensure that all deployed pods are running (inspect `READY` column):
@@ -120,6 +123,3 @@ shippingservice-v1-5fff674495-pkcdd         2/2     Running       0          15m
 shippingservice-v2-6fc7489bdb-tnp2v         2/2     Running       0          72s
 shippingservice-v3-677b68d6bf-jmnjc         2/2     Running       0          71s
 ```
-
-Note that some application services are deployed in multiple versions, for instance, `emailservice`
-and `shippingservice`.

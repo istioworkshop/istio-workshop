@@ -6,7 +6,7 @@
 
 In this chapter you will learn:
 
-* How to setup and use the Istio management utility `istioctl`.
+* How to setup the Istio management utility `istioctl`.
 * How to use `istioctl` to install Istio control plane.
 * How to verify the Istio installation.
 
@@ -81,8 +81,8 @@ Available Commands:
 
 ### Deploy control plane
 
-In order to install the Istio control plane, execute
-`istioctl` [manifest apply](https://istio.io/docs/reference/commands/istioctl/#istioctl-manifest-apply)
+In order to install Istio control plane, execute `istioctl`
+[manifest apply](https://istio.io/docs/reference/commands/istioctl/#istioctl-manifest-apply)
 command:
 
 ```
