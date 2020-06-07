@@ -1,4 +1,4 @@
-# Cleanup
+# Workshop cleanup
 
 ## Destroy Kubernetes cluster
 

@@ -6,6 +6,8 @@ Each chapter provides a short introduction to familiarize yourself with a featur
 
 Some chapters contain tasks for individual practice. They will be listed at the end of the chapter under the `Exercises` section. You are obliged to prepare a concise report summarizing the completed tasks. Please, include executed commands, applied configuration policies, or screenshots depending on the task type. Use your best judgment to decide what is essential to include in the report - there is no need to include everything. The recommended report format is PDF.
 
+The entire workshop will be conducted on a Kubernetes cluster launched using paid AWS services. The number of credits allocated to your account should be sufficient for the cluster to operate for a longer time, but remember to be economical. Try to complete all instructions in one run. If this is not possible, please [Stop the cluster](cleanup/stop.md) when it is not in use. Also, remember to [Destroy the cluster](cleanup/destroy.md) when you finish the workshop.
+
 Finally, the course assumes that you have basic knowledge about Service Mesh and Isito. If you are not there yet, first read the following two pages from the Istio documentation:
 
 * [What is Istio?](https://istio.io/docs/concepts/what-is-istio/)
