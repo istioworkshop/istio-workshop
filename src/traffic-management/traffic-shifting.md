@@ -1,13 +1,13 @@
 # Traffic shifting
 
-*This chapter presents how to ...*
+*This chapter presents how to conduct a canary release of a new service version using Istio traffic shifting functionality.*
 
 ## Outline
 
 In this chapter you will learn:
 
-* What is canary release.
-...
+* What is *Canary Release* and why it is important.
+* How to rollout a complete canary release using traffic shifting functionality.
 
 ## Walkthrough
 
@@ -25,7 +25,7 @@ Open the Kiali dashboard:
 $ istioctl dashboard kiali
 ```
 
-Then, switch to the graph view and select `Versioned app graph` type from the graph dropdown. It should display a similar structure:
+Then, switch to the graph view, select *Versioned app graph* type, and enable *Request percentage* in the edge label dropdown. The graph should display a similar structure:
 
 ![](/assets/images/traffic-shifting-1.png)
 
@@ -68,7 +68,7 @@ Observe the Kiali dashboard. After 1-2 minutes, the version routing should be re
 
 ![](/assets/images/traffic-shifting-2.png)
 
-In the meantime, we shoul continuously observe the essential health parameters for the new service workload (success rate, latency).
+In the meantime, we should continuously observe the essential health parameters for the new service workload (success rate, latency).
 
 Open the Grafana dashboard:
 
@@ -96,7 +96,7 @@ Spec:
         Subset:  v1
 ```
 
-However, the new service version performs well and we can forward more user traffic to it.
+However, the new service version performs well and we can route more user traffic towards it.
 
 Apply the following policy:
 
@@ -169,4 +169,4 @@ The canary deployment for the `productcatalog` service is complete:
 
 ## Exercises
 
-1. Conduct the canary deployment of the `email` service. Include used Istio policies and screenshots from Kiali and Grafana in your report.
+1. Conduct canary deployment for the `v3` version of the `shipping` service. Include used Istio policies and screenshots from Kiali and Grafana in your report.
