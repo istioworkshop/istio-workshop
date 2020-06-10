@@ -143,7 +143,7 @@ $ curl -LO https://github.com/kubernetes/kops/releases/download/v1.16.2/kops-lin
 Make the binary executable:
 
 ```
-$ chmod +x ./chmod +x kops-linux-amd64
+$ chmod +x kops-linux-amd64
 ```
 
 Move the binary into the system path:
