@@ -359,9 +359,9 @@ Ensure that all Kubernetes nodes are healthy:
 ```
 $ kubectl get nodes
 NAME                            STATUS   ROLES    AGE     VERSION
-ip-172-20-37-195.ec2.internal   Ready    node     3h41m   v1.16.9
-ip-172-20-45-213.ec2.internal   Ready    node     3h41m   v1.16.9
-ip-172-20-54-100.ec2.internal   Ready    master   3h43m   v1.16.9
+ip-172-20-37-195.ec2.internal   Ready    node     3h41m   v1.18.3
+ip-172-20-45-213.ec2.internal   Ready    node     3h41m   v1.18.3
+ip-172-20-54-100.ec2.internal   Ready    master   3h43m   v1.18.3
 ```
 
 Ensure that all Kubernetes components are ready (inspect `READY` and `STATUS` columns):
