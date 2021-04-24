@@ -212,7 +212,7 @@ cluster structure:
 The generated YAML manifest will be stored in the configured storage bucket. Review its contents:
 
 ```
-$ kops edit cluster
+$ kops edit cluster $NAME
 ```
 
 In addition, the `kops create` command displays the list of cloud resources that will be created
@@ -303,7 +303,7 @@ The list must be **carefully reviewed** before proceeding to the next step.
 Now, provision the cluster:
 
 ```
-$ kops update cluster --name istio-workshop.k8s.local --yes
+$ kops update cluster --name $NAME --yes
 
 Cluster is starting.  It should be ready in a few minutes.
 
