@@ -48,7 +48,7 @@ platforms use the guide in the
 Download the client binary:
 
 ```
-$ curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubectl
+$ curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl
 ```
 
 Make the binary executable:
@@ -137,7 +137,7 @@ platforms use the guide in the [documentation](https://kops.sigs.k8s.io/getting_
 Download the client binary:
 
 ```
-$ curl -LO https://github.com/kubernetes/kops/releases/download/v1.16.2/kops-linux-amd64
+$ curl -LO https://github.com/kubernetes/kops/releases/download/v1.18.3/kops-linux-amd64
 ```
 
 Make the binary executable:
@@ -156,7 +156,7 @@ Test to ensure the up-to-date version of the client:
 
 ```
 $ kops version
-Version 1.16.2
+Version 1.18.3
 ```
 
 ### Provision a cluster
