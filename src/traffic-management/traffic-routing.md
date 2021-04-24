@@ -116,7 +116,9 @@ After applying the policies, the traffic should be routed only to the version `v
 
 ![](/assets/images/traffic-routing-2.png)
 
-It might take a while until the configuration is distributed to the proxies and Kiali infers new comunication pattern from collected metrics.
+It might take a while until the configuration is distributed to the proxies and Kiali infers new comunication pattern from collected metrics. Changing the time range in the selector might reduce the time needed to obtain expected results in the graph:
+
+![](/assets/images/traffic-routing-3.png)
 
 The service node in the graph should be marked with a purple virtual service icon.
 

@@ -7,8 +7,8 @@ First, list node scaling groups:
 ```
 $ kops get ig
 NAME                ROLE    MACHINETYPE MIN	MAX	ZONES
-master-us-east-1a   Master  t2.medium   1   1   us-east-1a
-nodes               Node    t2.medium   0   0   us-east-1a
+master-us-east-1a   Master  t3.medium   1   1   us-east-1a
+nodes               Node    t3.medium   0   0   us-east-1a
 ```
 
 Save, name for the master group:
@@ -31,7 +31,7 @@ metadata:
   name: nodes
 spec:
   image: kope.io/k8s-1.16-debian-stretch-amd64-hvm-ebs-2020-01-17
-  machineType: t2.medium
+  machineType: t3.medium
   maxSize: 0
   minSize: 0
   ...
@@ -51,7 +51,7 @@ metadata:
   name: master-us-east-1a
 spec:
   image: kope.io/k8s-1.16-debian-stretch-amd64-hvm-ebs-2020-01-17
-  machineType: t2.medium
+  machineType: t3.medium
   maxSize: 0
   minSize: 0
   ...

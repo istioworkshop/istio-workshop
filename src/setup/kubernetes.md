@@ -48,7 +48,7 @@ platforms use the guide in the
 Download the client binary:
 
 ```
-$ curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubectl
+$ curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl
 ```
 
 Make the binary executable:
@@ -137,7 +137,7 @@ platforms use the guide in the [documentation](https://kops.sigs.k8s.io/getting_
 Download the client binary:
 
 ```
-$ curl -LO https://github.com/kubernetes/kops/releases/download/v1.16.2/kops-linux-amd64
+$ curl -LO https://github.com/kubernetes/kops/releases/download/v1.18.3/kops-linux-amd64
 ```
 
 Make the binary executable:
@@ -156,7 +156,7 @@ Test to ensure the up-to-date version of the client:
 
 ```
 $ kops version
-Version 1.16.2
+Version 1.18.3
 ```
 
 ### Provision a cluster
@@ -193,8 +193,8 @@ $ kops create cluster \
     --zones=us-east-1a \
     --master-count=1 \
     --node-count=2 \
-    --node-size=t2.medium \
-    --master-size=t2.medium \
+    --node-size=t3.medium \
+    --master-size=t3.medium \
     --networking=calico \
     ${NAME}
 ```
@@ -204,15 +204,15 @@ cluster structure:
 
 * deploy the cluster in `us-east-1a` availability zone,
 * provision 1 master node and 2 worker nodes,
-* use `t2.medium` instance type for Kubernetes master node,
-* use `t2.medium` instance type for Kubernetes worker nodes,
+* use `t3.medium` instance type for Kubernetes master node,
+* use `t3.medium` instance type for Kubernetes worker nodes,
 * setup [Calico CNI](https://www.projectcalico.org/) for cluster networking,
 * set cluster name to `istio-workshop.k8s.local`.
 
 The generated YAML manifest will be stored in the configured storage bucket. Review its contents:
 
 ```
-$ kops edit cluster
+$ kops edit cluster $NAME
 ```
 
 In addition, the `kops create` command displays the list of cloud resources that will be created
@@ -224,76 +224,82 @@ I0603 14:49:34.073018   71688 apply_cluster.go:556] Gossip DNS: skipping DNS val
 (...)
 Will create resources:
   AutoscalingGroup/master-us-east-1a.masters.istio-workshop.k8s.local
-  	Granularity         	1Minute
-  	LaunchConfiguration 	name:master-us-east-1a.masters.istio-workshop.k8s.local
-  	MaxSize             	1
-  	Metrics             	[GroupDesiredCapacity, GroupInServiceInstances, GroupMaxSize, GroupMinSize, GroupPendingInstances, GroupStandbyInstances, GroupTerminatingInstances, GroupTotalInstances]
-  	MinSize             	1
-  	Subnets             	[name:us-east-1a.istio-workshop.k8s.local]
-  	SuspendProcesses    	[]
-  	Tags                	{KubernetesCluster: istio-workshop.k8s.local, Name: master-us-east-1a.masters.istio-workshop.k8s.local, k8s.io/role/master: 1, kops.k8s.io/instancegroup: master-us-east-1a, k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: master-us-east-1a}
+      Granularity         	1Minute
+      LaunchConfiguration 	name:master-us-east-1a.masters.istio-workshop.k8s.local
+      LoadBalancers       	[name:api.istio-workshop.k8s.local id:api.istio-workshop.k8s.local]
+      MaxSize             	1
+      Metrics             	[GroupDesiredCapacity, GroupInServiceInstances, GroupMaxSize, GroupMinSize, GroupPendingInstances, GroupStandbyInstances, GroupTerminatingInstances, GroupTotalInstances]
+      MinSize             	1
+      Subnets             	[name:us-east-1a.istio-workshop.k8s.local id:subnet-01740566d42e75315]
+      SuspendProcesses    	[]
+      Tags                	{k8s.io/role/master: 1, kops.k8s.io/instancegroup: master-us-east-1a, Name: master-us-east-1a.masters.istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local, kubernetes.io/cluster/istio-workshop.k8s.local: owned, k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: master-us-east-1a}
+      TargetGroups        	[]
+
   AutoscalingGroup/nodes.istio-workshop.k8s.local
-  	Granularity         	1Minute
-  	LaunchConfiguration 	name:nodes.istio-workshop.k8s.local
-  	MaxSize             	2
-  	Metrics             	[GroupDesiredCapacity, GroupInServiceInstances, GroupMaxSize, GroupMinSize, GroupPendingInstances, GroupStandbyInstances, GroupTerminatingInstances, GroupTotalInstances]
-  	MinSize             	2
-  	Subnets             	[name:us-east-1a.istio-workshop.k8s.local]
-  	SuspendProcesses    	[]
-  	Tags                	{k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: nodes, KubernetesCluster: istio-workshop.k8s.local, Name: nodes.istio-workshop.k8s.local, k8s.io/role/node: 1, kops.k8s.io/instancegroup: nodes}
+      Granularity         	1Minute
+      LaunchConfiguration 	name:nodes.istio-workshop.k8s.local
+      LoadBalancers       	[]
+      MaxSize             	2
+      Metrics             	[GroupDesiredCapacity, GroupInServiceInstances, GroupMaxSize, GroupMinSize, GroupPendingInstances, GroupStandbyInstances, GroupTerminatingInstances, GroupTotalInstances]
+      MinSize             	2
+      Subnets             	[name:us-east-1a.istio-workshop.k8s.local id:subnet-01740566d42e75315]
+      SuspendProcesses    	[]
+      Tags                	{k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: nodes, k8s.io/role/node: 1, kops.k8s.io/instancegroup: nodes, Name: nodes.istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local, kubernetes.io/cluster/istio-workshop.k8s.local: owned}
+      TargetGroups        	[]
 (...)
   LaunchConfiguration/master-us-east-1a.masters.istio-workshop.k8s.local
-  	AssociatePublicIP   	true
-  	IAMInstanceProfile  	name:masters.istio-workshop.k8s.local id:masters.istio-workshop.k8s.local
-  	ImageID             	kope.io/k8s-1.16-debian-stretch-amd64-hvm-ebs-2020-01-17
-  	InstanceType        	t2.medium
-  	RootVolumeDeleteOnTermination	true
-  	RootVolumeSize      	64
-  	RootVolumeType      	gp2
-  	SSHKey              	name:kubernetes.istio-workshop.k8s.local-36:06:60:b5:d7:4b:b5:e6:08:0c:39:12:80:44:76:4a id:kubernetes.istio-workshop.k8s.local-36:06:60:b5:d7:4b:b5:e6:08:0c:39:12:80:44:76:4a
-  	SecurityGroups      	[name:masters.istio-workshop.k8s.local]
-  	SpotPrice
+      AssociatePublicIP   	true
+      IAMInstanceProfile  	name:masters.istio-workshop.k8s.local id:masters.istio-workshop.k8s.local
+      ImageID             	099720109477/ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20210325
+      InstanceType        	t3.medium
+      RootVolumeDeleteOnTermination	true
+      RootVolumeSize      	64
+      RootVolumeType      	gp2
+      SSHKey              	name:kubernetes.istio-workshop.k8s.local-36:06:60:b5:d7:4b:b5:e6:08:0c:39:12:80:44:76:4a id:kubernetes.istio-workshop.k8s.local-36:06:60:b5:d7:4b:b5:e6:08:0c:39:12:80:44:76:4a
+      SecurityGroups      	[name:masters.istio-workshop.k8s.local id:sg-0bc31f2a024a886d8]
+      SpotPrice
+
   LaunchConfiguration/nodes.istio-workshop.k8s.local
-  	AssociatePublicIP   	true
-  	IAMInstanceProfile  	name:nodes.istio-workshop.k8s.local id:nodes.istio-workshop.k8s.local
-  	ImageID             	kope.io/k8s-1.16-debian-stretch-amd64-hvm-ebs-2020-01-17
-  	InstanceType        	t2.medium
-  	RootVolumeDeleteOnTermination	true
-  	RootVolumeSize      	128
-  	RootVolumeType      	gp2
-  	SSHKey              	name:kubernetes.istio-workshop.k8s.local-36:06:60:b5:d7:4b:b5:e6:08:0c:39:12:80:44:76:4a id:kubernetes.istio-workshop.k8s.local-36:06:60:b5:d7:4b:b5:e6:08:0c:39:12:80:44:76:4a
-  	SecurityGroups      	[name:nodes.istio-workshop.k8s.local]
-  	SpotPrice
+      AssociatePublicIP   	true
+      IAMInstanceProfile  	name:nodes.istio-workshop.k8s.local id:nodes.istio-workshop.k8s.local
+      ImageID             	099720109477/ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20210325
+      InstanceType        	t3.medium
+      RootVolumeDeleteOnTermination	true
+      RootVolumeSize      	128
+      RootVolumeType      	gp2
+      SSHKey              	name:kubernetes.istio-workshop.k8s.local-36:06:60:b5:d7:4b:b5:e6:08:0c:39:12:80:44:76:4a id:kubernetes.istio-workshop.k8s.local-36:06:60:b5:d7:4b:b5:e6:08:0c:39:12:80:44:76:4a
+      SecurityGroups      	[name:nodes.istio-workshop.k8s.local id:sg-097a9b8d1ff38aece]
+      SpotPrice
 (...)
   LoadBalancer/api.istio-workshop.k8s.local
-  	LoadBalancerName    	api-istio-workshop-k8s-lo-n58mdh
-  	Subnets             	[name:us-east-1a.istio-workshop.k8s.local]
-  	SecurityGroups      	[name:api-elb.istio-workshop.k8s.local]
-  	Listeners           	{443: {"InstancePort":443,"SSLCertificateID":""}}
-  	HealthCheck         	{"Target":"SSL:443","HealthyThreshold":2,"UnhealthyThreshold":2,"Interval":10,"Timeout":5}
-  	ConnectionSettings  	{"IdleTimeout":300}
-  	CrossZoneLoadBalancing	{"Enabled":false}
-  	SSLCertificateID
-  	Tags                	{Name: api.istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local, kubernetes.io/cluster/istio-workshop.k8s.local: owned}
+      LoadBalancerName    	api-istio-workshop-k8s-lo-n58mdh
+      Subnets             	[name:us-east-1a.istio-workshop.k8s.local]
+      SecurityGroups      	[name:api-elb.istio-workshop.k8s.local]
+      Listeners           	{443: {"InstancePort":443,"SSLCertificateID":""}}
+      HealthCheck         	{"Target":"SSL:443","HealthyThreshold":2,"UnhealthyThreshold":2,"Interval":10,"Timeout":5}
+      ConnectionSettings  	{"IdleTimeout":300}
+      CrossZoneLoadBalancing	{"Enabled":false}
+      SSLCertificateID
+      Tags                	{Name: api.istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local, kubernetes.io/cluster/istio-workshop.k8s.local: owned}
 (...)
   SecurityGroup/masters.istio-workshop.k8s.local
-  	Description         	Security group for masters
-  	VPC                 	name:istio-workshop.k8s.local
-  	RemoveExtraRules    	[port=22, port=443, port=2380, port=2381, port=4001, port=4002, port=4789, port=179]
-  	Tags                	{Name: masters.istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local, kubernetes.io/cluster/istio-workshop.k8s.local: owned}
+      Description         	Security group for masters
+      VPC                 	name:istio-workshop.k8s.local
+      RemoveExtraRules    	[port=22, port=443, port=2380, port=2381, port=4001, port=4002, port=4789, port=179]
+      Tags                	{Name: masters.istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local, kubernetes.io/cluster/istio-workshop.k8s.local: owned}
 
   SecurityGroup/nodes.istio-workshop.k8s.local
-  	Description         	Security group for nodes
-  	VPC                 	name:istio-workshop.k8s.local
-  	RemoveExtraRules    	[port=22]
-  	Tags                	{Name: nodes.istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local, kubernetes.io/cluster/istio-workshop.k8s.local: owned}
+      Description         	Security group for nodes
+      VPC                 	name:istio-workshop.k8s.local
+      RemoveExtraRules    	[port=22]
+      Tags                	{Name: nodes.istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local, kubernetes.io/cluster/istio-workshop.k8s.local: owned}
 (...)
   VPC/istio-workshop.k8s.local
-  	CIDR                	172.20.0.0/16
-  	EnableDNSHostnames  	true
-  	EnableDNSSupport    	true
-  	Shared              	false
-  	Tags                	{kubernetes.io/cluster/istio-workshop.k8s.local: owned, Name: istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local}
+      CIDR                	172.20.0.0/16
+      EnableDNSHostnames  	true
+      EnableDNSSupport    	true
+      Shared              	false
+      Tags                	{kubernetes.io/cluster/istio-workshop.k8s.local: owned, Name: istio-workshop.k8s.local, KubernetesCluster: istio-workshop.k8s.local}
 (...)
 Cluster configuration has been created.
 ```
@@ -303,7 +309,7 @@ The list must be **carefully reviewed** before proceeding to the next step.
 Now, provision the cluster:
 
 ```
-$ kops update cluster --name istio-workshop.k8s.local --yes
+$ kops update cluster --name $NAME --yes
 
 Cluster is starting.  It should be ready in a few minutes.
 
@@ -334,8 +340,8 @@ Validating cluster istio-workshop.k8s.local
 
 INSTANCE GROUPS
 NAME                ROLE    MACHINETYPE MIN MAX SUBNETS
-master-us-east-1a   Master  t2.medium   1   1   us-east-1a
-nodes               Node    t2.medium   2   2   us-east-1a
+master-us-east-1a   Master  t3.medium   1   1   us-east-1a
+nodes               Node    t3.medium   2   2   us-east-1a
 
 NODE STATUS
 NAME                            ROLE    READY
@@ -353,9 +359,9 @@ Ensure that all Kubernetes nodes are healthy:
 ```
 $ kubectl get nodes
 NAME                            STATUS   ROLES    AGE     VERSION
-ip-172-20-37-195.ec2.internal   Ready    node     3h41m   v1.16.9
-ip-172-20-45-213.ec2.internal   Ready    node     3h41m   v1.16.9
-ip-172-20-54-100.ec2.internal   Ready    master   3h43m   v1.16.9
+ip-172-20-37-195.ec2.internal   Ready    node     3h41m   v1.18.3
+ip-172-20-45-213.ec2.internal   Ready    node     3h41m   v1.18.3
+ip-172-20-54-100.ec2.internal   Ready    master   3h43m   v1.18.3
 ```
 
 Ensure that all Kubernetes components are ready (inspect `READY` and `STATUS` columns):
