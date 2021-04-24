@@ -193,8 +193,8 @@ $ kops create cluster \
     --zones=us-east-1a \
     --master-count=1 \
     --node-count=2 \
-    --node-size=t2.medium \
-    --master-size=t2.medium \
+    --node-size=t3.medium \
+    --master-size=t3.medium \
     --networking=calico \
     ${NAME}
 ```
@@ -204,8 +204,8 @@ cluster structure:
 
 * deploy the cluster in `us-east-1a` availability zone,
 * provision 1 master node and 2 worker nodes,
-* use `t2.medium` instance type for Kubernetes master node,
-* use `t2.medium` instance type for Kubernetes worker nodes,
+* use `t3.medium` instance type for Kubernetes master node,
+* use `t3.medium` instance type for Kubernetes worker nodes,
 * setup [Calico CNI](https://www.projectcalico.org/) for cluster networking,
 * set cluster name to `istio-workshop.k8s.local`.
 
@@ -246,7 +246,7 @@ Will create resources:
   	AssociatePublicIP   	true
   	IAMInstanceProfile  	name:masters.istio-workshop.k8s.local id:masters.istio-workshop.k8s.local
   	ImageID             	kope.io/k8s-1.16-debian-stretch-amd64-hvm-ebs-2020-01-17
-  	InstanceType        	t2.medium
+  	InstanceType        	t3.medium
   	RootVolumeDeleteOnTermination	true
   	RootVolumeSize      	64
   	RootVolumeType      	gp2
@@ -257,7 +257,7 @@ Will create resources:
   	AssociatePublicIP   	true
   	IAMInstanceProfile  	name:nodes.istio-workshop.k8s.local id:nodes.istio-workshop.k8s.local
   	ImageID             	kope.io/k8s-1.16-debian-stretch-amd64-hvm-ebs-2020-01-17
-  	InstanceType        	t2.medium
+  	InstanceType        	t3.medium
   	RootVolumeDeleteOnTermination	true
   	RootVolumeSize      	128
   	RootVolumeType      	gp2
@@ -334,8 +334,8 @@ Validating cluster istio-workshop.k8s.local
 
 INSTANCE GROUPS
 NAME                ROLE    MACHINETYPE MIN MAX SUBNETS
-master-us-east-1a   Master  t2.medium   1   1   us-east-1a
-nodes               Node    t2.medium   2   2   us-east-1a
+master-us-east-1a   Master  t3.medium   1   1   us-east-1a
+nodes               Node    t3.medium   2   2   us-east-1a
 
 NODE STATUS
 NAME                            ROLE    READY
